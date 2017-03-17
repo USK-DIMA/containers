@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${login}"></title>
+</head>
+<body>
+<form th:action="@{/j_spring_security_check}" method="post">
+    <input type="text" name="username"/><br/>
+    <input type="password" name="password"><br/>
+    <button type="submit">Войти</button>
+</form>
+</body>
+</html>
