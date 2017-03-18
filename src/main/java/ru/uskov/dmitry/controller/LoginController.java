@@ -20,7 +20,7 @@ public class LoginController extends AbstractController {
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
     public String getLoginPage(Model model, Locale locale) {
-        model.addAttribute("login", messageSource.getMessage("login", null, locale));
+        model.addAttribute("disableLoginHeader", true);
         return "login";
     }
 }

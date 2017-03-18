@@ -8,17 +8,15 @@
 
 <div id="navigator" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" th:href="@{/}">Контейнеры</a>
-        </div>
         <div class="navbar-collapse collapse">
-            <form class="navbar-form navbar-right" role="form" th:action="@{/j_spring_security_check}" method="post">
+            <a class="navbar-brand" th:href="@{/}">Контейнеры</a>
+            <ul class="nav navbar-nav">
+                <li th:classappend="${pageType} == 'home' ? active"><a th:href="@{/}">Домашнаяя страница</a></li>
+                <li><a>О нас</a></li>
+                <li><a>Контакты</a></li>
+            </ul>
+            <form th:unless="${disableLoginHeader}" class="navbar-form navbar-right" role="form"
+                  th:action="@{/j_spring_security_check}" method="post">
                 <div class="form-group">
                     <input type="text" placeholder="Логин" name="username" class="form-control">
                 </div>
@@ -27,6 +25,16 @@
                 </div>
                 <button type="submit" class="btn btn-success">Войти</button>
             </form>
+            <ul th:if="${user}" class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Профиль<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a>Страница профиля</a></li>
+                        <li class="divider"></li>
+                        <li><a th:href="@{/logout}">Выход</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div><!--/.navbar-collapse -->
     </div>
 </div>
