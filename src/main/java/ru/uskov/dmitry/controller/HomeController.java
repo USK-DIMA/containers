@@ -18,13 +18,11 @@ import java.util.Locale;
  */
 @Controller
 @RequestMapping(value = {"/"})
-public class RootController extends AbstractController {
+public class HomeController extends AbstractController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getRootPage(Model model, Locale locale) {
-        //System.out.println(messageSource);
-        //model.addAttribute("text", messageSource.getMessage("text.hello", new Object[] {"Dmitry"}, locale));
-        return "root";
+        return "home";
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
