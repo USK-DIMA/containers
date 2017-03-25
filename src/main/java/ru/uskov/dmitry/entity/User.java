@@ -1,6 +1,6 @@
 package ru.uskov.dmitry.entity;
 
-import ru.uskov.dmitry.enums.ServiceRole;
+import ru.uskov.dmitry.enums.UserRole;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -32,15 +32,7 @@ public class User extends AbstractEntity {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<ServiceRole> serviceRoleSet;
-
-    public Set<ServiceRole> getServiceRoleSet() {
-        return serviceRoleSet;
-    }
-
-    public void setServiceRoleSet(Set<ServiceRole> serviceRoleSet) {
-        this.serviceRoleSet = serviceRoleSet;
-    }
+    private Set<UserRole> roles;
 
     public Long getId() {
         return id;
@@ -96,5 +88,13 @@ public class User extends AbstractEntity {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Set<UserRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<UserRole> roles) {
+        this.roles = roles;
     }
 }

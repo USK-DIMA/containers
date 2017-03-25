@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- saved from url=(0041)http://bootstrap-3.ru/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>admin</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Администрирование</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+
+    <style id="holderjs-style" type="text/css"></style>
+
 </head>
+
 <body>
-AdminPage
+<object th:replace="fragments/common :: #navigator"/>
+
+<div class="container-fluid">
+    <div class="row">
+        <object th:replace="fragments/common :: #admin-menu"/>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <object th:if="${layoutContent}" th:replace="__${layoutContent}__ :: #content"/>
+            <h1 th:unless="${layoutContent}" class="page-header">Dashboard</h1>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/jquery-3.2.0.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/adminCommon.js}"></script>
 </body>
 </html>

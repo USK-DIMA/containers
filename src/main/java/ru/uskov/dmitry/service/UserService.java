@@ -7,7 +7,7 @@ import ru.uskov.dmitry.common.CollectionUtils;
 import ru.uskov.dmitry.dao.UserDao;
 import ru.uskov.dmitry.entity.Contragent;
 import ru.uskov.dmitry.entity.User;
-import ru.uskov.dmitry.enums.ServiceRole;
+import ru.uskov.dmitry.enums.UserRole;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,10 +40,11 @@ public class UserService extends AbstractService {
             user.setLogin("login" + i);
             user.setName("name" + i);
             user.setPassword("pass");
-            Set<ServiceRole> roleSet = new HashSet<>();
-            roleSet.add(ServiceRole.ROLE_ADMIN);
-            roleSet.add(ServiceRole.ROLE_USER);
-            user.setServiceRoleSet(roleSet);
+            Set<UserRole> roleSet = new HashSet<>();
+            roleSet.add(UserRole.ROLE_SERVICE_ADMIN);
+            roleSet.add(UserRole.ROLE_CONTRAGENT_ADMIN);
+            roleSet.add(UserRole.ROLE_CONTRAGENT_USER);
+            user.setRoles(roleSet);
             users.add(user);
         }
         userDao.insertUsers(users);

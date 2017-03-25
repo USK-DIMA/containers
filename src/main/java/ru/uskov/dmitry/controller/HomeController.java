@@ -26,7 +26,6 @@ public class HomeController extends AbstractController {
     public String getRootPage(Model model, Locale locale) {
         User user = Common.getCurrentUser();
         if (user != null) {
-            model.addAttribute("user", user.getName());
             model.addAttribute("disableLoginHeader", true);
         }
         model.addAttribute("pageType", "home");
