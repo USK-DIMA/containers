@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by Dmitry on 11.03.2017.
  */
 @Entity
-@Table(name = "WebUser")
+@Table(name = "User_")
 public class User extends AbstractEntity {
 
     @Id
@@ -22,11 +22,15 @@ public class User extends AbstractEntity {
 
     private String email;
 
+    private String comment;
+
     private String name;
 
+/*
     @ManyToOne
     @JoinColumn(name = "contragentId")
     private Contragent contragent;
+*/
 
     private Boolean active;
 
@@ -74,14 +78,6 @@ public class User extends AbstractEntity {
         this.name = name;
     }
 
-    public Contragent getContragent() {
-        return contragent;
-    }
-
-    public void setContragent(Contragent contragent) {
-        this.contragent = contragent;
-    }
-
     public Boolean getActive() {
         return active;
     }
@@ -96,5 +92,13 @@ public class User extends AbstractEntity {
 
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

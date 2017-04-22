@@ -15,7 +15,7 @@ public class CollectionUtils {
         return null;
     }
 
-    public static boolean isEmoty(Collection collection) {
+    public static boolean isEmpty(Collection collection) {
         return collection == null || collection.size() == 0;
     }
 }

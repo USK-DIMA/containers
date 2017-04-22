@@ -14,11 +14,11 @@ public class AdminController {
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
     public String getAdminPage() {
-        if (Common.isCurrentUserAdminService()) {
-            return "redirect: admin/service/contragents";
+        if (Common.isCurrentUserAdmin()) {
+            return "redirect: admin/users";
         }
-        if (Common.isCurrentUserAdminContragent()) {
-            return "redirect: admin/contragent/users";
+        if (Common.isCurrentUserManager()) {
+            return "redirect: admin/devices";
         }
         return "admin";
     }

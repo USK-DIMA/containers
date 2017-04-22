@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Created by Dmitry on 25.03.2017.
  */
 @Controller
-@RequestMapping("/admin/service/devices")
+@RequestMapping("/admin/devices")
 public class AdminDeviceController {
     private static final Logger logger = LoggerFactory.getLogger(AdminDeviceController.class);
 

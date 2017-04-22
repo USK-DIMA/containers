@@ -1,11 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <script th:src="@{/js/util/custom-checkbox.js}"></script>
+    <script th:src="@{/js/adminUsers.js}"></script>
 </head>
 <body>
 <div id="content">
-    <h1 class="page-header">ПОЛЬЗОВАТЕЛИ</h1></div>
-</body>
+    <h1 class="page-header">ПОЛЬЗОВАТЕЛИ</h1>
+    <button type="button" id="createUserButton" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>
+        Создать
+    </button>
+    <table id="users-table" class="table table-striped table-bordered dataTable no-footer" width="100%">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ФИО</th>
+            <th>Логин</th>
+            <th>Почта</th>
+            <th>Роли</th>
+            <th>Кол-во устройств</th>
+            <th>Активный</th>
+        </tr>
+        </thead>
+    </table>
+    <div>
+        <h4 class="page-header">Редактирования пользователя c ID: <span>777</span> <span>(Активный)</span></h4>
+        <div class="container-fluid">
+            <div class="col-md-4">
+                <div class="row">
+                    <h5 class="page-header">Общая информация</h5>
+                </div>
+                <div class="row">
+                    <input type="text" class="form-control input-cl" placeholder="ФИО"/>
+                </div>
+                <div class="row">
+                    <input type="text" class="form-control input-cl" placeholder="Логин"/>
+                </div>
+                <div class="row">
+                    <input type="text" class="form-control input-cl" placeholder="Почта"/>
+                </div>
+                <div class="row">
+                    <input type="text" class="form-control input-cl" placeholder="Комментарий"/>
+                </div>
+                <div class="row">
+                    <h5 class="page-header">Редактривание ролей</h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-7" style="padding: 0px">
+                        <input id="isManager" text="Менеджер" type="checkbox" class="custom-checkbox-bootstrap"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7" style="padding: 0px">
+                        <input id="isAdmin" text="Администратор" type="checkbox" class="custom-checkbox-bootstrap"/>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top:5px">
+                    <button type="button" class="btn btn-danger">Удалить</button>
+                    <button type="button" class="btn btn-warning">Заблокировать</button>
+                    <button type="button" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+            <div class="col-md-1">
+
+            </div>
+
+            <div class="col-md-7">
+                <div class="row">
+                    <h5 class="page-header">Устройства пользователя</h5>
+                </div>
+                <div class="row">
+                    <table id="users-table2" class="table table-striped table-bordered dataTable no-footer"
+                           style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>ФИО</th>
+                            <th>Логин</th>
+                            <th>Почта</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="createUserModaDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/admin/users/create}" modelAttribute="userForm" method="post"
+                          onsubmit="return validateAllFieldsCreateUserForm();">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">Название модали</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input id="createUserLogin" data-animation="true" data-container="body"
+                                               data-placement="top" data-content="Логин занят" name="login" type="text"
+                                               class="form-control input-cl" required="required" placeholder="Логин"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input name="name" type="text" class="form-control input-cl" placeholder="ФИО"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input id="createUserPassword" name="password" type="password"
+                                               class="form-control input-cl" required="required" placeholder="Пароль"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="createUserEmail" data-animation="true" data-container="body"
+                                               data-placement="right" data-content="Почта уже используется кем-то"
+                                               name="email" type="email" class="form-control input-cl"
+                                               required="required" placeholder="Почта"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input id="createUserConfirmPassword" type="password" data-animation="true"
+                                               data-container="body" data-placement="bottom"
+                                               data-content="Пароли не совпадают" class="form-control input-cl"
+                                               required="required" placeholder="Подверждение пароля"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input name="comment" type="text" class="form-control input-cl"
+                                               placeholder="Комментарий"/>
+                                    </div>
+                                </div>
+                                <div class="row checkbox input-cl">
+                                    <label style="padding-left: 35px;"><input name="active" type="checkbox"
+                                                                              placeholder="Сделать активным"/>Сделать
+                                        активным</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="checkbox " style="float:left">
+                                <label disabled="disabled" style="padding-left: 35px;"><input type="checkbox"
+                                                                                              disabled="disabled"/>Отправить
+                                    уведомление на почту</label>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary">Создать</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 </html>

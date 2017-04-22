@@ -33,7 +33,7 @@
                         <li><a th:href="@{/profile}">Страница профиля</a></li>
                         <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserAdmin}"><a th:href="@{/admin}">Администрирование</a>
                         </li>
-                        <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserUser}"><a th:href="@{/devices}">Устройства</a>
+                        <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserManager}"><a th:href="@{/devices}">Устройства</a>
                         </li>
                         <li class="divider"></li>
                         <li><a th:href="@{/logout}">Выход</a></li>
@@ -46,14 +46,14 @@
 
 <div id="admin-menu" class="col-sm-3 col-md-2 sidebar">
     <ul class="nav nav-sidebar">
-        <li><a th:href="@{/admin/service/contragents}">Контрагенты</a></li>
-        <li><a th:href="@{/admin/service/users}">Пользователи</a></li>
-        <li><a th:href="@{/admin/service/devices}">Устройства</a></li>
+        <!--<li><a th:href="@{/admin/service/contragents}">Контрагенты</a></li>-->
+        <li><a th:href="@{/admin/users}">Пользователи</a></li>
+        <li><a th:href="@{/admin/devices}">Устройства</a></li>
     </ul>
-    <ul class="nav nav-sidebar">
-        <li><a th:href="@{/admin/contragents/users}">Пользователи</a></li>
-        <li><a th:href="@{/admin/contragents/devices}">Устройства</a></li>
-    </ul>
+    <!--    <ul class="nav nav-sidebar">
+            <li><a th:href="@{/admin/contragents/users}">Пользователи</a></li>
+            <li><a th:href="@{/admin/contragents/devices}">Устройства</a></li>
+        </ul>-->
 </div>
 
 

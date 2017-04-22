@@ -3,16 +3,16 @@ package ru.uskov.dmitry.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.uskov.dmitry.annotation.TransactionalService;
+import ru.uskov.dmitry.annotation.TransactionalSupport;
 import ru.uskov.dmitry.common.CollectionUtils;
 import ru.uskov.dmitry.dao.UserDao;
-import ru.uskov.dmitry.entity.Contragent;
 import ru.uskov.dmitry.entity.User;
 import ru.uskov.dmitry.enums.UserRole;
+import ru.uskov.dmitry.exception.EmailAlreadyExistException;
+import ru.uskov.dmitry.exception.LoginAlreadyExistException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Dmitry on 11.03.2017.
@@ -29,21 +29,34 @@ public class UserService extends AbstractService {
     }
 
     @TransactionalService
-    public void saveTestUser(Contragent contragent) {
+    public void saveTestUser() {
         final int size = 10;
         List<User> users = new ArrayList<>(size);
+
+        {
+            User user = new User();
+            user.setActive(true);
+            user.setEmail("admin@gmail.com");
+            user.setLogin("admin");
+            user.setName("Усков Дмитрий Юрьевич");
+            user.setPassword("123");
+            Set<UserRole> roleSet = new HashSet<>();
+            roleSet.add(UserRole.ROLE_ADMIN);
+            roleSet.add(UserRole.ROLE_MANAGER);
+            user.setRoles(roleSet);
+            users.add(user);
+        }
+
         for (int i = 0; i < size; i++) {
             User user = new User();
             user.setActive(i % 2 == 0);
-            user.setContragent(contragent);
             user.setEmail("user" + i + "@gmail.com");
             user.setLogin("login" + i);
             user.setName("name" + i);
             user.setPassword("pass");
             Set<UserRole> roleSet = new HashSet<>();
-            roleSet.add(UserRole.ROLE_SERVICE_ADMIN);
-            roleSet.add(UserRole.ROLE_CONTRAGENT_ADMIN);
-            roleSet.add(UserRole.ROLE_CONTRAGENT_USER);
+            roleSet.add(UserRole.ROLE_ADMIN);
+            roleSet.add(UserRole.ROLE_MANAGER);
             user.setRoles(roleSet);
             users.add(user);
         }
@@ -54,5 +67,51 @@ public class UserService extends AbstractService {
     public User loadActiveUserByLogin(String login) {
         List<User> users = userDao.getByFieldEq(getMap("login", login).end("active", new Boolean(true)));
         return CollectionUtils.getFirst(users);
+    }
+
+    @TransactionalService
+    public void createUser(User newUser) throws EmailAlreadyExistException, LoginAlreadyExistException {
+        List<User> allUsers = loadAllUsers();
+        List<String> emails = allUsers.stream().map(u -> u.getEmail()).collect(Collectors.toList());
+        List<String> logins = allUsers.stream().map(u -> u.getLogin()).collect(Collectors.toList());
+        if (emails.contains(newUser.getEmail())) {
+            throw new EmailAlreadyExistException();
+        }
+
+        if (logins.contains(newUser.getLogin())) {
+            throw new LoginAlreadyExistException();
+        }
+        userDao.insertUsers(Collections.singletonList(newUser));
+    }
+
+    @TransactionalSupport
+    public boolean loginExist(String login) {
+        return userDao.getByFieldEqCount(getMapEnd("login", login)) != 0;
+    }
+
+    @TransactionalSupport
+    public boolean emailExist(String email) {
+        return userDao.getByFieldEqCount(getMapEnd("email", email)) != 0;
+    }
+
+    @TransactionalService
+    public void delete(Long userId) {
+        userDao.delete(userId);
+    }
+
+    @TransactionalService
+    public void setActive(Long userId, Boolean active) {
+        userDao.setActive(userId, active);
+    }
+
+
+    @TransactionalService
+    public void updateUser(User user) {
+        userDao.update(user);
+    }
+
+    @TransactionalSupport
+    public User getUser(Long userId) {
+        return userDao.getUser(userId);
     }
 }

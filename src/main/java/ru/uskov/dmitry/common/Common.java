@@ -13,11 +13,11 @@ public class Common {
 
 
     public static boolean isCurrentUserAdmin() {
-        return currentUserHasAnyRole(UserRole.ROLE_SERVICE_ADMIN, UserRole.ROLE_CONTRAGENT_ADMIN);
+        return currentUserHasAnyRole(UserRole.ROLE_ADMIN);
     }
 
-    public static boolean isCurrentUserUser() {
-        return currentUserHasAnyRole(UserRole.ROLE_CONTRAGENT_USER);
+    public static boolean isCurrentUserManager() {
+        return currentUserHasAnyRole(UserRole.ROLE_MANAGER);
     }
 
     public static boolean currentUserHasAnyRole(UserRole... userRoles) {
@@ -26,7 +26,7 @@ public class Common {
             return false;
         }
         Set<UserRole> roles = user.getRoles();
-        if (CollectionUtils.isEmoty(roles)) {
+        if (CollectionUtils.isEmpty(roles)) {
             return false;
         }
         for (UserRole role : userRoles) {
@@ -47,11 +47,4 @@ public class Common {
         return null;
     }
 
-    public static boolean isCurrentUserAdminService() {
-        return currentUserHasAnyRole(UserRole.ROLE_SERVICE_ADMIN);
-    }
-
-    public static boolean isCurrentUserAdminContragent() {
-        return currentUserHasAnyRole(UserRole.ROLE_CONTRAGENT_ADMIN);
-    }
 }
