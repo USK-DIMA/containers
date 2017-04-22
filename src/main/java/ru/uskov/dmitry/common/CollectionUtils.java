@@ -1,5 +1,6 @@
 package ru.uskov.dmitry.common;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -12,5 +13,9 @@ public class CollectionUtils {
             return collection.get(0);
         }
         return null;
+    }
+
+    public static boolean isEmpty(Collection collection) {
+        return collection == null || collection.size() == 0;
     }
 }

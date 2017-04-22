@@ -1,6 +1,6 @@
 package ru.uskov.dmitry.entity;
 
-import ru.uskov.dmitry.enums.ServiceRole;
+import ru.uskov.dmitry.enums.UserRole;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by Dmitry on 11.03.2017.
  */
 @Entity
-@Table(name = "WebUser")
+@Table(name = "User_")
 public class User extends AbstractEntity {
 
     @Id
@@ -22,25 +22,21 @@ public class User extends AbstractEntity {
 
     private String email;
 
+    private String comment;
+
     private String name;
 
+/*
     @ManyToOne
     @JoinColumn(name = "contragentId")
     private Contragent contragent;
+*/
 
     private Boolean active;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<ServiceRole> serviceRoleSet;
-
-    public Set<ServiceRole> getServiceRoleSet() {
-        return serviceRoleSet;
-    }
-
-    public void setServiceRoleSet(Set<ServiceRole> serviceRoleSet) {
-        this.serviceRoleSet = serviceRoleSet;
-    }
+    private Set<UserRole> roles;
 
     public Long getId() {
         return id;
@@ -82,19 +78,27 @@ public class User extends AbstractEntity {
         this.name = name;
     }
 
-    public Contragent getContragent() {
-        return contragent;
-    }
-
-    public void setContragent(Contragent contragent) {
-        this.contragent = contragent;
-    }
-
     public Boolean getActive() {
         return active;
     }
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Set<UserRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<UserRole> roles) {
+        this.roles = roles;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

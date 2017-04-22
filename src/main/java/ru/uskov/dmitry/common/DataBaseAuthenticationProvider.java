@@ -36,7 +36,7 @@ public class DataBaseAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Wrong password.");
         }
 
-        return new UsernamePasswordAuthenticationToken(user, password, user.getServiceRoleSet());
+        return new UsernamePasswordAuthenticationToken(user, password, user.getRoles());
     }
 
     @Override

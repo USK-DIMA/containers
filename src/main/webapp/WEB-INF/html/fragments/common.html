@@ -15,7 +15,8 @@
                 <li><a>О нас</a></li>
                 <li><a>Контакты</a></li>
             </ul>
-            <form th:unless="${disableLoginHeader}" class="navbar-form navbar-right" role="form"
+            <form th:if="${T(ru.uskov.dmitry.common.Common).currentUser} == null and ${disableLoginHeader}==null"
+                  class="navbar-form navbar-right" role="form"
                   th:action="@{/j_spring_security_check}" method="post">
                 <div class="form-group">
                     <input type="text" placeholder="Логин" name="username" class="form-control">
@@ -25,11 +26,15 @@
                 </div>
                 <button type="submit" class="btn btn-success">Войти</button>
             </form>
-            <ul th:if="${user}" class="nav navbar-nav navbar-right">
+            <ul th:if="${T(ru.uskov.dmitry.common.Common).currentUser} != null " class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Профиль<b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a>Страница профиля</a></li>
+                        <li><a th:href="@{/profile}">Страница профиля</a></li>
+                        <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserAdmin}"><a th:href="@{/admin}">Администрирование</a>
+                        </li>
+                        <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserManager}"><a th:href="@{/devices}">Устройства</a>
+                        </li>
                         <li class="divider"></li>
                         <li><a th:href="@{/logout}">Выход</a></li>
                     </ul>
@@ -38,6 +43,19 @@
         </div><!--/.navbar-collapse -->
     </div>
 </div>
+
+<div id="admin-menu" class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+        <!--<li><a th:href="@{/admin/service/contragents}">Контрагенты</a></li>-->
+        <li><a th:href="@{/admin/users}">Пользователи</a></li>
+        <li><a th:href="@{/admin/devices}">Устройства</a></li>
+    </ul>
+    <!--    <ul class="nav nav-sidebar">
+            <li><a th:href="@{/admin/contragents/users}">Пользователи</a></li>
+            <li><a th:href="@{/admin/contragents/devices}">Устройства</a></li>
+        </ul>-->
+</div>
+
 
 <footer>
     <p>© Company 2017</p>
