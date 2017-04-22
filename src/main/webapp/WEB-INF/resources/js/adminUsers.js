@@ -316,6 +316,7 @@ function validateLoginInput(input) {
     var valid = validateLogin(input.val());
     showPopover(input, !valid);
     setValidClass(input, valid);
+    return valid;
 }
 
 
@@ -323,6 +324,7 @@ function validateEmailInput(input) {
     var valid = validateEmail(input.val());
     showPopover(input, !valid);
     setValidClass(input, valid);
+    return valid;
 }
 
 function getPassInputs() {
@@ -350,7 +352,7 @@ function validateUserPasswordNewUserForm() {
 }
 
 function validateAllFieldsCreateUserForm() {
-    return validateUserPasswordNewUserForm() & validateEmailInput($("#createUserEmail")) & validateLoginInput($("#createUserLogin"));
+    return (validateUserPasswordNewUserForm() & validateEmailInput($("#createUserEmail")) & validateLoginInput($("#createUserLogin"))) == true;
 }
 
 /**
