@@ -71,17 +71,22 @@ public class UserService extends AbstractService {
 
     @TransactionalService
     public void createUser(User newUser) throws EmailAlreadyExistException, LoginAlreadyExistException {
-        List<User> allUsers = loadAllUsers();
+        checkLoginAndEmail(newUser);
+        userDao.insertUsers(Collections.singletonList(newUser));
+    }
+
+    @TransactionalSupport
+    private void checkLoginAndEmail(User newUser) throws EmailAlreadyExistException, LoginAlreadyExistException {
+        List<User> allUsers = loadAllUsers().stream().filter(u -> !u.getId().equals(newUser.getId())).collect(Collectors.toList());
         List<String> emails = allUsers.stream().map(u -> u.getEmail()).collect(Collectors.toList());
         List<String> logins = allUsers.stream().map(u -> u.getLogin()).collect(Collectors.toList());
         if (emails.contains(newUser.getEmail())) {
-            throw new EmailAlreadyExistException();
+            throw new EmailAlreadyExistException("Данный Email уже присутсвует в системе");
         }
 
         if (logins.contains(newUser.getLogin())) {
-            throw new LoginAlreadyExistException();
+            throw new LoginAlreadyExistException("Выбранный логин уже занят кем-то другим");
         }
-        userDao.insertUsers(Collections.singletonList(newUser));
     }
 
     @TransactionalSupport
@@ -106,8 +111,15 @@ public class UserService extends AbstractService {
 
 
     @TransactionalService
-    public void updateUser(User user) {
-        userDao.update(user);
+    public void updateUser(User user) throws LoginAlreadyExistException, EmailAlreadyExistException {
+        checkLoginAndEmail(user);
+        User forUpdate = userDao.getUser(user.getId());
+        forUpdate.setComment(user.getComment());
+        forUpdate.setEmail(user.getEmail());
+        forUpdate.setName(user.getName());
+        forUpdate.setLogin(user.getLogin());
+        forUpdate.setRoles(user.getRoles());
+        userDao.update(forUpdate);
     }
 
     @TransactionalSupport

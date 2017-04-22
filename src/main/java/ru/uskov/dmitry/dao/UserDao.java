@@ -65,6 +65,6 @@ public class UserDao extends AbstractDao {
 
     @TransactionalSupport
     public User getUser(Long userId) {
-        return (User) getCurrentSession().load(User.class, userId);
+        return (User) getCurrentSession().get(User.class, userId);
     }
 }

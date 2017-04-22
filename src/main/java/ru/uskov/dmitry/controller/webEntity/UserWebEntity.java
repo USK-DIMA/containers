@@ -35,7 +35,7 @@ public class UserWebEntity {
         this.fio = user.getName();
         this.login = user.getLogin();
         this.email = user.getEmail();
-        this.roles = user.getRoles().stream().map(r -> r.getName()).collect(Collectors.toSet());
+        this.roles = user.getRoles().stream().map(r -> r.name()).collect(Collectors.toSet());
         this.deviceCount = 0;
         this.active = user.getActive();
     }

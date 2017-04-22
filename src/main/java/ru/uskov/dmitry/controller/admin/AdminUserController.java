@@ -28,21 +28,6 @@ public class AdminUserController {
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
     public String getPage(Model model) {
-/*        List<User> userList = userService.loadAllUsers();
-        System.out.println("UserListSize: " + userList.size());
-
-        if (userList != null && userList.size() > 0) {
-            System.out.println(userList.get(0).getRoles());
-        }
-
-
-        if (test != null && test) {
-            List<Contragent> contragents = contragentService.getAll();
-            if (contragents != null && contragents.size() > 0) {
-                userService.saveTestUser(contragents.get(0));
-            }
-        }
-        contragentService.createTest();*/
         model.addAttribute("layoutContent", "fragments/admin/users");
         return "admin";
     }
@@ -79,21 +64,22 @@ public class AdminUserController {
         userService.delete(userId);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/setActive", method = RequestMethod.POST)
     @ResponseBody
-    public void setActive(@RequestParam("id") Long userId, @RequestParam("active") Boolean active) {
+    public boolean setActive(@RequestParam("id") Long userId, @RequestParam("active") Boolean active) {
         userService.setActive(userId, active);
+        return userService.getUser(userId).getActive();
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public void updateUser(@RequestParam("user") User user) {
+    public void updateUser(@RequestBody(required = false) User user) throws EmailAlreadyExistException, LoginAlreadyExistException {
         userService.updateUser(user);
     }
 
-    @RequestMapping(value = "/getUser/{userId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/getUserInfo", method = RequestMethod.GET)
     @ResponseBody
-    public User getUserById(@PathVariable("userId") Long userId) {
+    public User getUserById(@RequestParam("userId") Long userId) {
         return userService.getUser(userId);
     }
 
@@ -101,6 +87,7 @@ public class AdminUserController {
     @RequestMapping(value = "/devices/{userId}", method = RequestMethod.POST)
     @ResponseBody
     public List<Object> getUserDevices(@PathVariable("userId") Long userId) {
+        //todo
         return new ArrayList();
     }
 
