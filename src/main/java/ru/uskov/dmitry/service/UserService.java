@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.uskov.dmitry.annotation.TransactionalService;
 import ru.uskov.dmitry.annotation.TransactionalSupport;
 import ru.uskov.dmitry.common.CollectionUtils;
+import ru.uskov.dmitry.common.Common;
 import ru.uskov.dmitry.dao.DeviceDao;
 import ru.uskov.dmitry.dao.UserDao;
 import ru.uskov.dmitry.entity.Device;
@@ -27,6 +28,9 @@ public class UserService extends AbstractService {
 
     @Autowired
     DeviceDao deviceDao;
+
+    @Autowired
+    Common common;
 
     @TransactionalService
     public List<User> loadAllUsers() {
@@ -118,7 +122,10 @@ public class UserService extends AbstractService {
     @TransactionalService
     public void updateUser(User user, Set<Long> deviceId) throws LoginAlreadyExistException, EmailAlreadyExistException {
         checkLoginAndEmail(user);
-        List<Device> devices = deviceDao.get(deviceId);
+        List<Device> devices = new LinkedList<>();
+        if (!CollectionUtils.isEmpty(deviceId)) {
+            devices = deviceDao.get(deviceId);
+        }
         User forUpdate = userDao.getUser(user.getId());
         forUpdate.setComment(user.getComment());
         forUpdate.setEmail(user.getEmail());
@@ -127,6 +134,7 @@ public class UserService extends AbstractService {
         forUpdate.setRoles(user.getRoles());
         forUpdate.setDevices(devices.stream().collect(Collectors.toSet()));
         userDao.update(forUpdate);
+        common.updateCurrentUser();
     }
 
     @TransactionalSupport

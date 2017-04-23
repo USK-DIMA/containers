@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.uskov.dmitry.annotation.TransactionalService;
 import ru.uskov.dmitry.annotation.TransactionalSupport;
+import ru.uskov.dmitry.common.Common;
 import ru.uskov.dmitry.dao.DeviceDao;
 import ru.uskov.dmitry.dao.UserDao;
 import ru.uskov.dmitry.entity.Device;
 import ru.uskov.dmitry.entity.User;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -59,5 +61,13 @@ public class DeviceService {
             return new LinkedList<>();
         }
         return userDao.getUsers(usersId);
+    }
+
+    public Set<Device> getAllActiveForCurrentUser() {
+        User user = Common.getCurrentUser();
+        if (user == null) {
+            return new LinkedHashSet<>();
+        }
+        return userDao.getUser(user.getId()).getDevices();
     }
 }

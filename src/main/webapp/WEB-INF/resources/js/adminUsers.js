@@ -53,7 +53,7 @@ function initUserTable(){
         bLengthChange: false,
         searching: false,
         iDisplayLength : 6,
-        bLengthChange : false,
+        bLengthCchange : false,
         pageLength: 6,
         initComplete: addClickUserTableRowListener,
         columns: [

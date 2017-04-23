@@ -9,7 +9,7 @@
        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
     <context:annotation-config/>
-    <context:component-scan base-package="ru.uskov.dmitry.service, ru.uskov.dmitry.dao"/>
+    <context:component-scan base-package="ru.uskov.dmitry.service, ru.uskov.dmitry.dao, ru.uskov.dmitry.common"/>
 
     <context:property-placeholder location="/WEB-INF/spring.properties"/>
 

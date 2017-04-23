@@ -1,7 +1,6 @@
 package ru.uskov.dmitry.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
  * Created by Dmitry on 25.03.2017.
  */
 @Controller
-@Secured("ROLE_MANAGER")
 @RequestMapping("/admin/devices")
 public class AdminDeviceController {
 
