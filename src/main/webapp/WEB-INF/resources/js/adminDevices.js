@@ -12,7 +12,6 @@ function initDevicesTable(){
         searching: false,
         iDisplayLength : 6,
         bLengthChange : false,
-        autoWidth: false,
         pageLength: 6,
         initComplete: addClickDeviceTableRowListener,
         columns: [

@@ -5,13 +5,13 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.uskov.dmitry.controller.form.UserForm;
 import ru.uskov.dmitry.controller.webEntity.UserWebEntity;
 import ru.uskov.dmitry.entity.User;
 import ru.uskov.dmitry.exception.EmailAlreadyExistException;
 import ru.uskov.dmitry.exception.LoginAlreadyExistException;
 import ru.uskov.dmitry.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,26 +73,17 @@ public class AdminUserController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public void updateUser(@RequestBody(required = false) User user) throws EmailAlreadyExistException, LoginAlreadyExistException {
-        userService.updateUser(user);
+    public void updateUser(@RequestBody(required = false) UserForm user) throws EmailAlreadyExistException, LoginAlreadyExistException {
+        userService.updateUser(user, user.getDeviceId());
     }
 
     @RequestMapping(value = "/getUserInfo", method = RequestMethod.GET)
     @ResponseBody
     public User getUserById(@RequestParam("userId") Long userId) {
-        return userService.getUser(userId);
+        User user = userService.getUser(userId);
+        user.getDevices().stream().forEach(d -> d.setUsers(null));
+        return user;
     }
-
-
-    @RequestMapping(value = "/devices/{userId}", method = RequestMethod.POST)
-    @ResponseBody
-    public List<Object> getUserDevices(@PathVariable("userId") Long userId) {
-        //todo
-        return new ArrayList();
-    }
-
-
-
 
 }
 

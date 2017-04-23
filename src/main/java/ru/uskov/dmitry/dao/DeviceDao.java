@@ -9,6 +9,7 @@ import ru.uskov.dmitry.annotation.TransactionalSupport;
 import ru.uskov.dmitry.entity.Device;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Dmitry on 23.04.2017.
@@ -38,5 +39,9 @@ public class DeviceDao extends AbstractDao {
     @TransactionaMandatory
     public void update(Device device) {
         getCurrentSession().update(device);
+    }
+
+    public List<Device> get(Set<Long> deviceId) {
+        return listByIds(Device.class, deviceId);
     }
 }
