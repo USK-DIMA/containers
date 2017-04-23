@@ -113,10 +113,10 @@ function initUserTable(){
 
 function addClickUserTableRowListener() {
 
-    $("#users-table tbody").on( 'dblclick', 'tr', function () {
+    $("#users-table tbody").on( 'click', 'tr', function () {
          var userId = $(this).find('[data-user-id]').attr('data-user-id');
          loadUserInfo(userId);
-     });
+    });
 }
 
 function loadUserInfo(userId) {

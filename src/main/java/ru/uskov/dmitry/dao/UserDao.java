@@ -20,7 +20,7 @@ public class UserDao extends AbstractDao {
 
     @TransactionalSupport
     public List<User> getAll() {
-        return getCurrentSession().createCriteria(User.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+        return getAll(User.class);
     }
 
     @TransactionaMandatory

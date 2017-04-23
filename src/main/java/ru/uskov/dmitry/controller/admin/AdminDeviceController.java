@@ -1,24 +1,57 @@
 package ru.uskov.dmitry.controller.admin;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import ru.uskov.dmitry.controller.form.DeviceForm;
+import ru.uskov.dmitry.controller.webEntity.DeviceWebEntity;
+import ru.uskov.dmitry.entity.Device;
+import ru.uskov.dmitry.service.DeviceService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Dmitry on 25.03.2017.
  */
 @Controller
+@Secured("ROLE_MANAGER")
 @RequestMapping("/admin/devices")
 public class AdminDeviceController {
-    private static final Logger logger = LoggerFactory.getLogger(AdminDeviceController.class);
+
+    @Autowired
+    private DeviceService deviceService;
 
     @RequestMapping(path = {"", "/"}, method = RequestMethod.GET)
     public String getPage(Model model) {
         model.addAttribute("layoutContent", "fragments/admin/devices");
         return "admin";
+    }
+
+    @RequestMapping(path = "/getAll", method = RequestMethod.GET)
+    @ResponseBody
+    public List<DeviceWebEntity> getAll() {
+        return deviceService.getAll().stream().map(d -> new DeviceWebEntity((d))).collect(Collectors.toList());
+    }
+
+    @RequestMapping(path = "/get", method = RequestMethod.GET)
+    @ResponseBody
+    public Device get(@RequestParam("id") Long deviceId) {
+        return deviceService.get(deviceId);
+    }
+
+    @RequestMapping(path = "/update/{deviceId}", method = RequestMethod.POST)
+    @ResponseBody
+    public void updateDevice(@PathVariable("deviceId") Long deviceId, @RequestBody() DeviceForm deviceForm) {
+        deviceService.update(deviceId, deviceForm.getName(), deviceForm.getComment());
+    }
+
+    @RequestMapping(path = "/setActive", method = RequestMethod.POST)
+    @ResponseBody
+    public void setActive(@RequestParam("deviceId") Long deviceId, @RequestParam("active") Boolean active) {
+        deviceService.setActive(deviceId, active);
     }
 
 }
