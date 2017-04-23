@@ -2,6 +2,8 @@ $(document).ready(function() {
     initDevicesTable();
 });
 
+var allUser;
+
 function initDevicesTable(){
     getDevicesTable().DataTable({
         ajax: getContextPath() + "/admin/devices/getAll",
@@ -99,8 +101,81 @@ function fillDeviceInfo(device) {
     $("#deviceName").val(device.name);
     $("#deviceComment").val(device.comment);
     $("#deviceCoordinate").val(device.coordinate);
-    showDivDeviceInfo(true);
+    var initPromise = initDivDeviceUserInfo();
     onePointDeviceMap(device.coordinate, device.name, device.comment);
+    $.when(initPromise).then(function() {
+        fillDeviseUserMapTable(device.users);
+    });
+}
+
+function initDivDeviceUserInfo() {
+    var promise = $.Deferred();
+    if(allUser == undefined) {
+        promise = ajaxInitAllUser();
+    } else {
+        promise = getResolvePromise();
+    }
+    showDivDeviceInfo(true);
+    return promise;
+}
+
+function ajaxInitAllUser() {
+    var dfd = $.Deferred();
+    $.ajax({
+        url: getContextPath() + '/admin/users/getAll',
+        method: 'GET'
+    }).done(function(data) {
+        allUser = data;
+        dfd.resolve();
+    }).fail(function(data) {
+      Notify.generate('Не удалось загрузить список пользователей', 'Ошибка', 2);
+        dfd.reject();
+    });
+    return dfd.promise();
+}
+
+function fillDeviseUserMapTable(activeUsers) {
+
+     var activeUsersId =  $.map( activeUsers, function( val, i ) {
+        return val.id;
+    });
+
+    $("#devices-user-map-table").DataTable({
+        data: allUser,
+         sAjaxDataProp: "",
+        bLengthChange: false,
+        destroy: true,
+        scrollY: "220px",
+        scrollCollapse: true,
+        autoWidth: false,
+        bInfo: false,
+        paging: false,
+        searching: false,
+        bLengthChange : false,
+        columns: [
+            {
+                data: "login",
+                render: function ( data, type, row ) {
+                    return '<span data-user-id="' + row.id + '">'+data+'</span>';
+                }
+            },
+            {
+                data: "fio",
+                render: function ( data, type, row ) {
+                    return '<span data-user-id="' + row.id + '">'+data+'</span>';
+                }
+            },
+            {
+                render: function ( data, type, row ) {
+                    var checked = ''
+                    if(activeUsersId.includes(row.id)) {
+                        checked = ' checked="checked" ';
+                    }
+                    return '<input data-user-id-for-map="'+row.id+'" type="checkbox"'+checked+'/>';
+                }
+            }
+        ]
+    });
 }
 
 function showDivDeviceInfo(show) {
@@ -178,7 +253,8 @@ function saveCurrentDeviceInfo() {
     var deviceId = getCurrentDeviceId();
     var name = $("#deviceName").val();
     var comment = $("#deviceComment").val();
-    var device = {name: name, comment: comment};
+    var usersId = getUsersIdForMap();
+    var device = {name: name, comment: comment, usersId: usersId};
     $.ajax({
         url: getContextPath() + '/admin/devices/update/'+ deviceId,
         method: 'POST',
@@ -187,9 +263,25 @@ function saveCurrentDeviceInfo() {
         data: JSON.stringify(device)
     }).done(function(data) {
         updateDeviceTable(deviceId, device);
+        Notify.generate('Изменения приняты', 'Успешно', 2);
     }).fail(function(data) {
         Notify.generate('Не удалось обновить информацию об устройстве', 'Ошибка', 2);
     });
+}
+
+function getUsersIdForMap() {
+    var $userIds = $('#devices-user-map-table').find('input[data-user-id-for-map]').filter(function() {
+        return $(this).prop('checked');
+    }).map(function(){
+        return $(this).attr('data-user-id-for-map');
+    });
+
+    var ans = []
+    $userIds.each(function(i, v){
+        ans[i] = v;
+    })
+
+    return ans;
 }
 
 function updateDeviceTable(deviceId, device) {
@@ -199,6 +291,7 @@ function updateDeviceTable(deviceId, device) {
     var data = table.row(tr).data();
     data.name = device.name;
     data.comment = device.comment;
+    data.userCount = device.usersId.length;
     table.row(tr).data(data).draw();
     table.page(currentPage).draw(false)
 }

@@ -21,6 +21,12 @@ function getUrlParam(key) {
     return getUrlParamMap()[key.toLowerCase()];
 }
 
+function getResolvePromise() {
+    var dfd = $.Deferred();
+    dfd.resolve();
+    return dfd.promise();
+}
+
 function refreshPage(map) {
     var url = window.location.pathname;
     if(map != undefined) {

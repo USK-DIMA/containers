@@ -7,9 +7,14 @@ import org.springframework.stereotype.Service;
 import ru.uskov.dmitry.annotation.TransactionalService;
 import ru.uskov.dmitry.annotation.TransactionalSupport;
 import ru.uskov.dmitry.dao.DeviceDao;
+import ru.uskov.dmitry.dao.UserDao;
 import ru.uskov.dmitry.entity.Device;
+import ru.uskov.dmitry.entity.User;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Dmitry on 23.04.2017.
@@ -20,6 +25,9 @@ public class DeviceService {
 
     @Autowired
     private DeviceDao deviceDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @TransactionalSupport
     public List<Device> getAll() {
@@ -37,10 +45,19 @@ public class DeviceService {
     }
 
     @TransactionalService
-    public void update(Long deviceId, String name, String comment) {
+    public void update(Long deviceId, String name, String comment, Set<Long> usersId) {
         Device device = deviceDao.get(deviceId);
         device.setName(name);
+        List<User> users = getUsers(usersId);
+        device.setUsers(users.stream().collect(Collectors.toSet()));
         device.setComment(comment);
         deviceDao.update(device);
+    }
+
+    private List<User> getUsers(Set<Long> usersId) {
+        if (usersId == null || usersId.size() == 0) {
+            return new LinkedList<>();
+        }
+        return userDao.getUsers(usersId);
     }
 }

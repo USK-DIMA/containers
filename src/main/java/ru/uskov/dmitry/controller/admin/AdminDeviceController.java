@@ -39,13 +39,15 @@ public class AdminDeviceController {
     @RequestMapping(path = "/get", method = RequestMethod.GET)
     @ResponseBody
     public Device get(@RequestParam("id") Long deviceId) {
-        return deviceService.get(deviceId);
+        Device device = deviceService.get(deviceId);
+        device.getUsers().stream().forEach(u -> u.setDevices(null));
+        return device;
     }
 
     @RequestMapping(path = "/update/{deviceId}", method = RequestMethod.POST)
     @ResponseBody
     public void updateDevice(@PathVariable("deviceId") Long deviceId, @RequestBody() DeviceForm deviceForm) {
-        deviceService.update(deviceId, deviceForm.getName(), deviceForm.getComment());
+        deviceService.update(deviceId, deviceForm.getName(), deviceForm.getComment(), deviceForm.getUsersId());
     }
 
     @RequestMapping(path = "/setActive", method = RequestMethod.POST)

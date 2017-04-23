@@ -31,7 +31,10 @@ public class User extends AbstractEntity {
 
     private Boolean active;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "UserToDeviceMap",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "deviceId"))
     private Set<Device> devices;
 
     @ElementCollection(fetch = FetchType.EAGER)

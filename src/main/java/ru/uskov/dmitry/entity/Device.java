@@ -22,6 +22,9 @@ public class Device extends AbstractEntity {
     private Date modifyData;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "UserToDeviceMap",
+            joinColumns = @JoinColumn(name = "deviceId"),
+            inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<User> users;
 
     private Boolean active;
