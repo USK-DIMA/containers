@@ -171,7 +171,8 @@ function fillDeviseUserMapTable(activeUsers) {
                         checked = ' checked="checked" ';
                     }
                     return '<input data-user-id-for-map="'+row.id+'" type="checkbox"'+checked+'/>';
-                }
+                },
+                 orderable: false
             }
         ]
     });

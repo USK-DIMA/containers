@@ -200,7 +200,8 @@ function updateDeviceTable(activeDevices) {
                             checked = ' checked="checked" ';
                         }
                         return '<input data-device-id-for-map="'+row.id+'" type="checkbox"'+checked+'/>';
-                    }
+                    },
+                    orderable: false
                 },
             ]
         });
