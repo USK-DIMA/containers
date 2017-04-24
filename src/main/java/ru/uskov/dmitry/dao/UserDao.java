@@ -11,6 +11,7 @@ import ru.uskov.dmitry.entity.User;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Dmitry on 11.03.2017.
@@ -20,7 +21,7 @@ public class UserDao extends AbstractDao {
 
     @TransactionalSupport
     public List<User> getAll() {
-        return getCurrentSession().createCriteria(User.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+        return getAll(User.class);
     }
 
     @TransactionaMandatory
@@ -66,5 +67,9 @@ public class UserDao extends AbstractDao {
     @TransactionalSupport
     public User getUser(Long userId) {
         return (User) getCurrentSession().get(User.class, userId);
+    }
+
+    public List<User> getUsers(Set<Long> usersId) {
+        return listByIds(User.class, usersId);
     }
 }

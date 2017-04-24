@@ -2,7 +2,6 @@ $(document).ready(function() {
     initUserTable();
     var currentUser = getUrlParam('userId');
     loadUserInfo(currentUser);
-    initDeviceTable();
     $("#createUserButton").click(function(){
         showCreateUserDialog();
     });
@@ -54,7 +53,7 @@ function initUserTable(){
         bLengthChange: false,
         searching: false,
         iDisplayLength : 6,
-        bLengthChange : false,
+        bLengthCchange : false,
         pageLength: 6,
         initComplete: addClickUserTableRowListener,
         columns: [
@@ -113,10 +112,10 @@ function initUserTable(){
 
 function addClickUserTableRowListener() {
 
-    $("#users-table tbody").on( 'dblclick', 'tr', function () {
+    $("#users-table tbody").on( 'click', 'tr', function () {
          var userId = $(this).find('[data-user-id]').attr('data-user-id');
          loadUserInfo(userId);
-     });
+    });
 }
 
 function loadUserInfo(userId) {
@@ -152,7 +151,86 @@ function fillUserInfo(user) {
     updateCurrentUserRoleCheckboxes(roles);
     setCurrentUserActive(user.active);
     $("#div-user-info").css('display', 'block');
+    updateDeviceTable(user.devices);
+
 }
+
+
+var allDevices;
+function updateDeviceTable(activeDevices) {
+    $.when(loadAllDevices()).then(function() {
+        var activeDevicesIds = $.map(activeDevices, function(val, i){
+             return val.id;
+        })
+
+        $("#device-to-users-map-table").DataTable({
+            data: allDevices,
+            bLengthChange: false,
+            destroy: true,
+            scrollY: "300px",
+            scrollCollapse: true,
+            bInfo: false,
+            paging: false,
+            bAutoWidth: false,
+            searching: false,
+            bLengthChange : false,
+            columns: [
+                {
+                    data: "id",
+                    render: function ( data, type, row ) {
+                        return '<span data-device-id="' + row.id + '">'+data+'</span>';
+                    }
+                },
+                {
+                    data: "name",
+                    render: function ( data, type, row ) {
+                        return '<span data-device-id="' + row.id + '">'+data+'</span>';
+                    }
+                },
+                {
+                    data: "comment",
+                    render: function ( data, type, row ) {
+                        return '<span data-device-id="' + row.id + '">'+data+'</span>';
+                    }
+                },
+                {
+                    render: function ( data, type, row ) {
+                        var checked = ''
+                        if(activeDevicesIds.includes(row.id)) {
+                            checked = ' checked="checked" ';
+                        }
+                        return '<input data-device-id-for-map="'+row.id+'" type="checkbox"'+checked+'/>';
+                    },
+                    orderable: false
+                },
+            ]
+        });
+    })
+}
+
+function loadAllDevices(){
+    if(allDevices == undefined) {
+        return ajaxLoadDevices();
+    } else {
+        return getResolvePromise();
+    }
+}
+
+function ajaxLoadDevices() {
+    var dfd = $.Deferred();
+    $.ajax({
+        url: getContextPath() + '/admin/devices/getAll',
+        method: 'GET',
+    }).done(function(data) {
+        allDevices = data;
+        dfd.resolve();
+    }).fail(function(data) {
+        Notify.generate('Не удалось загрузить устройства', 'Ошибка', 2);
+        dfd.reject();
+    });
+    return dfd.promise();
+}
+
 
 function updateTableRow(user) {
     var table = $("#users-table").DataTable();
@@ -164,6 +242,7 @@ function updateTableRow(user) {
     data.fio = user.name;
     data.login = user.login;
     data.roles = user.roles;
+    data.deviceCount = user.deviceId.length;
     table.row(tr).data(data).draw();
     table.page(currentPage).draw(false)
 }
@@ -203,7 +282,22 @@ function saveCurrentUserInfo() {
     user.email = $("#currentUserEmail").val();
     user.comment = $("#currentUserComment").val();
     user.roles = getCurrentUserSelectedRoles();
+    user.deviceId = getCurrentUserSelectedDevices();
     ajaxUpdateUser(user);
+}
+
+
+function getCurrentUserSelectedDevices() {
+    var deviceIds = $('#device-to-users-map-table').find('input[data-device-id-for-map]').filter(function(){
+        return $(this).prop('checked');
+    }).map(function(){
+        return $(this).attr('data-device-id-for-map');
+    })
+    var ans = [];
+    deviceIds.each(function(i, v, a){
+        ans[i] = v;
+    });
+    return ans;
 }
 
 
@@ -296,21 +390,7 @@ function updateActiveForUserInTable(userId, isActive) {
 
 }
 
-function initDeviceTable() {
-    $("#users-table2").DataTable({
-        ajax: getContextPath() + "/admin/users/getAll",
-        sAjaxDataProp: "",
-        bLengthChange: false,
-        searching: false,
-        pageLength: 7,
-        columns: [
-            { "data": "id" },
-            { "data": "fio" },
-            { "data": "login" },
-            { "data": "email" }
-        ]
-    });
-}
+
 
 function validateLoginInput(input) {
     var valid = validateLogin(input.val());

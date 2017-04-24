@@ -1,12 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <script th:src="@{/js/util/custom-checkbox.js}"></script>
+    <script th:src="@{/js/adminDevices.js}"></script>
+    <script th:src="@{/js/adminDevicesYandexMap.js}"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 </head>
 <body>
 <div id="content">
     <h1 class="page-header">УСТРОЙСТВА</h1>
+    <table id="devices-table" class="table table-striped table-bordered dataTable no-footer" width="100%">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Дата создания</th>
+            <th>Название</th>
+            <th>Комментарий</th>
+            <th>Кол-во пользователей</th>
+            <th>Время обновления</th>
+            <th>Активный</th>
+        </tr>
+        </thead>
+    </table>
+    <div id="div-device-info" style="display: none;">
+        <h4 class="page-header">Редактирование устройства c ID: <span id="currentDeviceId"
+                                                                      data-current-device-id="">777</span> <span
+                id="currentDeviceActiveText">(Активный)</span></h4>
+        <div class="container-fluid">
+            <div class="col-md-5">
+
+                <div class="row">
+                    <input id="deviceName" type="text" class="form-control input-cl" placeholder="Название"/>
+                </div>
+                <div class="row">
+                    <input id="deviceComment" type="text" class="form-control input-cl" placeholder="Комментарий"/>
+                </div>
+                <div class="row">
+                    <input id="deviceCoordinate" disabled="disabled" type="text" class="form-control input-cl"
+                           placeholder="Координаты"/>
+                </div>
+                <div class="row">
+                    <table id="devices-user-map-table" class="table table-striped table-bordered dataTable no-footer"
+                           width="100%">
+                        <thead>
+                        <tr>
+                            <th>Логин</th>
+                            <th>Имя</th>
+                            <th>Виден пользователю</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div class="row" style="margin-top:10px">
+                    <button type="button" id="blockedCurrentDevice" onclick="ajaxSetActiveCurrentDevice(false)"
+                            class="btn btn-warning">Заблокировать
+                    </button>
+                    <button type="button" id="activeCurrentUser" onclick="ajaxSetActiveCurrentDevice(true)"
+                            class="btn btn-warning">Активировать
+                    </button>
+                    <button type="button" onclick="saveCurrentDeviceInfo()" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+            <div class="col-md-1">
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="row">
+                    <div id="map" style="width: 100%; height: 435px"></div>
+                </div>
+            </div>
+        </div>
 </div>
 </body>
 </html>

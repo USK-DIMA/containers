@@ -9,7 +9,10 @@ import java.util.Set;
  * Created by Dmitry on 11.03.2017.
  */
 @Entity
-@Table(name = "User_")
+@Table(name = "User_", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "login")
+})
 public class User extends AbstractEntity {
 
     @Id
@@ -26,13 +29,13 @@ public class User extends AbstractEntity {
 
     private String name;
 
-/*
-    @ManyToOne
-    @JoinColumn(name = "contragentId")
-    private Contragent contragent;
-*/
-
     private Boolean active;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "UserToDeviceMap",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "deviceId"))
+    private Set<Device> devices;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
@@ -76,6 +79,14 @@ public class User extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Device> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(Set<Device> devices) {
+        this.devices = devices;
     }
 
     public Boolean getActive() {
