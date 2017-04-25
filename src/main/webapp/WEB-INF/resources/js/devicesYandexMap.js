@@ -143,3 +143,7 @@ function buildRows() {
     });
 }
 
+function cleanMap() {
+    deviceMap.geoObjects.removeAll();
+}
+

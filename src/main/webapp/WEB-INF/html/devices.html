@@ -13,6 +13,7 @@
     <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/bootstrap/css/jumbotron.css}" rel="stylesheet">
     <link th:href="@{/dataTables/datatables.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 
 </head>
@@ -45,8 +46,30 @@
         <div class="row">
             <div id="map" style="width: 100%; height: 500px"></div>
         </div>
-        <div class="row">
-            <a style="cursor:pointer;" onclick="buildRows()">Проложить маршрут</a>
+        <div class="row" style="margin-top:15px">
+            <button type="button" onclick="buildRows()" class="btn btn-primary"></span>
+                Проложить маршрут
+            </button>
+            <button type="button" onclick="clearDeviceMap()" class="btn btn-primary"></span>
+                Отчистить карту
+            </button>
+        </div>
+        <div class="row" id="divDeviceInfo" style="display: none">
+            <h5 class="page-header">Устройство с ID <span id="deviceId">1234</span></h5>
+            <div class="col-md-6">
+                <input type="text" id="name" disabled="disabled" class="form-control input-cl" placeholder="Название"/>
+                <input type="text" id="comment" disabled="disabled" class="form-control input-cl"
+                       placeholder="Комментарий"/>
+                <input type="text" id="coordinate" disabled="disabled" class="form-control input-cl"
+                       placeholder="Координаты"/>
+                <span>Наполненость</span>
+                <div style="margin-top: 5px" class="progress">
+                    <div class="progress-bar" id="fillingProgressBar" role="progressbar" aria-valuenow="60"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                        60%
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

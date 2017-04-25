@@ -70,4 +70,9 @@ public class DeviceService {
         }
         return userDao.getUser(user.getId()).getDevices();
     }
+
+    @TransactionalSupport
+    public Device getDeviceForCurrentUser(Long deviceId) {
+        return getAllActiveForCurrentUser().stream().filter(d -> d.getId().equals(deviceId)).findFirst().get();
+    }
 }

@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ru.uskov.dmitry.controller.webEntity.DeviceWebEntity;
+import ru.uskov.dmitry.entity.Device;
 import ru.uskov.dmitry.service.DeviceService;
 
 import java.util.List;
@@ -30,6 +32,14 @@ public class DeviceController {
     @RequestMapping(path = {"", "/"}, method = RequestMethod.GET)
     public String getPage(Model model) {
         return "devices";
+    }
+
+    @RequestMapping(path = "/get", method = RequestMethod.GET)
+    @ResponseBody
+    public Device getDevice(@RequestParam("id") Long deviceId) {
+        Device device = deviceService.getDeviceForCurrentUser(deviceId);
+        device.setUsers(null);
+        return device;
     }
 
     @RequestMapping(path = "getAll", method = RequestMethod.GET)
