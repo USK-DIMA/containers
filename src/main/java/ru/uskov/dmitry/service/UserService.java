@@ -6,12 +6,15 @@ import ru.uskov.dmitry.annotation.TransactionalService;
 import ru.uskov.dmitry.annotation.TransactionalSupport;
 import ru.uskov.dmitry.common.CollectionUtils;
 import ru.uskov.dmitry.common.Common;
+import ru.uskov.dmitry.controller.form.ChangePasswordForm;
 import ru.uskov.dmitry.dao.DeviceDao;
 import ru.uskov.dmitry.dao.UserDao;
 import ru.uskov.dmitry.entity.Device;
 import ru.uskov.dmitry.entity.User;
 import ru.uskov.dmitry.enums.UserRole;
+import ru.uskov.dmitry.exception.ConfirmPasswordException;
 import ru.uskov.dmitry.exception.EmailAlreadyExistException;
+import ru.uskov.dmitry.exception.IncorrectPasswordException;
 import ru.uskov.dmitry.exception.LoginAlreadyExistException;
 
 import java.util.*;
@@ -85,15 +88,20 @@ public class UserService extends AbstractService {
     }
 
     @TransactionalSupport
-    private void checkLoginAndEmail(User newUser) throws EmailAlreadyExistException, LoginAlreadyExistException {
-        List<User> allUsers = loadAllUsers().stream().filter(u -> !u.getId().equals(newUser.getId())).collect(Collectors.toList());
+    private void checkLoginAndEmail(User user) throws EmailAlreadyExistException, LoginAlreadyExistException {
+        checkLoginAndEmail(user.getId(), user.getLogin(), user.getEmail());
+    }
+
+    @TransactionalSupport
+    private void checkLoginAndEmail(Long userId, String login, String email) throws EmailAlreadyExistException, LoginAlreadyExistException {
+        List<User> allUsers = loadAllUsers().stream().filter(u -> !u.getId().equals(userId)).collect(Collectors.toList());
         List<String> emails = allUsers.stream().map(u -> u.getEmail()).collect(Collectors.toList());
         List<String> logins = allUsers.stream().map(u -> u.getLogin()).collect(Collectors.toList());
-        if (emails.contains(newUser.getEmail())) {
+        if (emails.contains(email)) {
             throw new EmailAlreadyExistException("Данный Email уже присутсвует в системе");
         }
 
-        if (logins.contains(newUser.getLogin())) {
+        if (logins.contains(login)) {
             throw new LoginAlreadyExistException("Выбранный логин уже занят кем-то другим");
         }
     }
@@ -141,4 +149,35 @@ public class UserService extends AbstractService {
     public User getUser(Long userId) {
         return userDao.getUser(userId);
     }
+
+    @TransactionalService
+    public void changePassword(Long userId, ChangePasswordForm changePasswordForm) throws IncorrectPasswordException, ConfirmPasswordException {
+        User user = userDao.getUser(userId);
+        if (!changePasswordForm.getOldPassword().equals(user.getPassword())) {
+            throw new IncorrectPasswordException();
+        }
+        if (!changePasswordForm.getNewPassword().equals(changePasswordForm.getConfirmPassword())) {
+            throw new ConfirmPasswordException();
+        }
+        user.setPassword(changePasswordForm.getNewPassword());
+        userDao.update(user);
+        common.updateCurrentUser();
+    }
+
+    @TransactionalSupport
+    public boolean validUserPassword(Long userId, String password) {
+        return userDao.getUser(userId).getPassword().equals(password);
+    }
+
+    @TransactionalService
+    public void updateCurrentUser(String login, String email, String name) throws LoginAlreadyExistException, EmailAlreadyExistException {
+        User user = common.getUpdatedCurrentUser();
+        checkLoginAndEmail(user.getId(), login, email);
+        user.setLogin(login);
+        user.setEmail(email);
+        user.setName(name);
+        userDao.update(user);
+        common.updateCurrentUser();
+    }
+
 }

@@ -55,6 +55,11 @@ public class Common {
         return null;
     }
 
+    public User getUpdatedCurrentUser() {
+        updateCurrentUser();
+        return getCurrentUser();
+    }
+
     public void updateCurrentUser() {
         User user = userDao.getUser(getCurrentUser().getId());
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getRoles()));

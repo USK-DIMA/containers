@@ -11,6 +11,7 @@
         <intercept-url pattern="/admin/devices/**" access="hasRole('ROLE_MANAGER')"/>
         <intercept-url pattern="/admin/users/**" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/profile/**" access="isAuthenticated()"/>
+        <intercept-url pattern="/devices/**" access="isAuthenticated()"/>
         <form-login
                 login-processing-url="/j_spring_security_check"
                 login-page="/login"
