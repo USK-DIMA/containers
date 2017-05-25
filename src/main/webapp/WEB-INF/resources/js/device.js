@@ -3,7 +3,7 @@ $(document).ready(function(){
 });
 
 function getDeviceTableHeight() {
-    $(window).height() - $("#devices-table").offset().top  - $("#devices-table").height() - 35 - 25 + "px";
+    return $(window).height() - $("#devices-table").offset().top  - $("#devices-table").height() - 35 - 25 + "px";
 }
 
 function initDeviceTable() {
