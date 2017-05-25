@@ -2,11 +2,17 @@ $(document).ready(function(){
     initDeviceTable();
 });
 
+function getDeviceTableHeight() {
+    $(window).height() - $("#devices-table").offset().top  - $("#devices-table").height() - 35 - 25 + "px";
+}
+
 function initDeviceTable() {
+    var tableHeight = getDeviceTableHeight();
+    console.log(tableHeight);
     $("#devices-table").DataTable({
         ajax: getContextPath() + '/devices/getAll',
         sAjaxDataProp: "",
-        scrollY: "800px",
+        scrollY: tableHeight,
         scrollCollapse: true,
         autoWidth: true,
         bInfo: false,

@@ -26,8 +26,8 @@
 
     <bean id="templateEngine"
           class="org.thymeleaf.spring4.SpringTemplateEngine">
-        <!--<property name="templateResolver" ref="templateResolver"/>-->
-        <property name="templateResolver" ref="fileTemplateResolver"/>
+        <property name="templateResolver" ref="templateResolver"/>
+        <!--<property name="templateResolver" ref="fileTemplateResolver"/>-->
     </bean>
 
     <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
@@ -41,14 +41,14 @@
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
 
-    <!--<mvc:resources mapping="/css/**" location="/WEB-INF/resources/css/"/>-->
-    <mvc:resources mapping="/css/**"
-                   location="file:C:/Users/Dmitry/IDEA Projects/Containers Monitor/src/main/webapp/WEB-INF/resources/css/"/>
+    <mvc:resources mapping="/css/**" location="/WEB-INF/resources/css/"/>
+    <!--<mvc:resources mapping="/css/**"
+                   location="file:C:/Users/Dmitry/IDEA Projects/Containers Monitor/src/main/webapp/WEB-INF/resources/css/"/>-->
     <!--<mvc:resources mapping="/js/**" location="/WEB-INF/resources/js/"/>-->
     <mvc:resources mapping="/js/**"
                    location="file:C:/Users/Dmitry/IDEA Projects/Containers Monitor/src/main/webapp/WEB-INF/resources/js/"/>
     <!--    <mvc:resources mapping="/fonts/**" location="/WEB-INF/bootstrap/fonts/"/>-->
-    <mvc:resources mapping="/dataTables/**" location="/WEB-INF/resources/DataTables/"/>
+    <mvc:resources mapping="/dataTables/**" location="/WEB-INF/resources/dataTables/"/>
     <mvc:resources mapping="/bootstrap/**" location="/WEB-INF/resources/bootstrap/"/>
     <mvc:default-servlet-handler/>
     <mvc:annotation-driven/>

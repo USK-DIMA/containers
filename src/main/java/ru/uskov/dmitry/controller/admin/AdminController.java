@@ -15,10 +15,10 @@ public class AdminController {
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
     public String getAdminPage() {
         if (Common.isCurrentUserAdmin()) {
-            return "redirect: admin/users";
+            return "redirect:admin/users";
         }
         if (Common.isCurrentUserManager()) {
-            return "redirect: admin/devices";
+            return "redirect:admin/devices";
         }
         return "admin";
     }
