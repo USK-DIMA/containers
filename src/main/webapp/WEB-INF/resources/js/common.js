@@ -117,6 +117,22 @@ function validateEmail(email) {
     return valid;
 }
 
+function getColorProgressBarClass(percent) {
+    if(percent<20) {
+            return '#5bc0de';
+        }
+        if(percent<50) {
+            return '#5cb85c';
+        }
+        if(percent<80) {
+            return '#f0ad4e';
+        }
+        if(percent<90) {
+            return '#d9534f';
+        }
+        return '#000000';
+}
+
 
 function validateNameInput(input) {
     var name = $("#name").val();

@@ -38,6 +38,10 @@ public class Device extends AbstractEntity {
 
     private String comment;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "containerTypeId", nullable = false)
+    private ContainerType containerType;
+
     public Long getId() {
         return id;
     }
@@ -112,6 +116,14 @@ public class Device extends AbstractEntity {
 
     public Integer getFilling() {
         return filling;
+    }
+
+    public ContainerType getContainerType() {
+        return containerType;
+    }
+
+    public void setContainerType(ContainerType containerType) {
+        this.containerType = containerType;
     }
 
     public void setFilling(Integer filling) {

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="shortcut icon" href="">-->
+
+    <title>Ещё не готово</title>
+
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/bootstrap/css/jumbotron.css}" rel="stylesheet">
+
+</head>
+
+<body>
+
+<object th:replace="fragments/common :: #navigator"/>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>Упс</h1>
+        <p>Сожалеем, но в данной версии продукта данный функционал ещё не доступен</p>
+        <p><a class="btn btn-primary btn-lg" th:href="@{/}" role="button">На главную »</a></p>
+    </div>
+</div>
+
+<script th:src="@{/bootstrap/js/jquery-3.2.0.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

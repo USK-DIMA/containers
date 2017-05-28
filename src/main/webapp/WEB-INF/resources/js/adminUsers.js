@@ -203,6 +203,17 @@ function updateDeviceTable(activeDevices) {
                     },
                     orderable: false
                 },
+                {
+                    data: 'active',
+                    render: function(data, type, row) {
+                        if(!data) {
+                            return '<span class="label label-danger">Заблокирован</span>';
+                        } else {
+                            return '<span class="label label-success">Активен</span>';
+                        }
+
+                    }
+                }
             ]
         });
     })

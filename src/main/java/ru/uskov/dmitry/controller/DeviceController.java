@@ -39,6 +39,7 @@ public class DeviceController {
     public Device getDevice(@RequestParam("id") Long deviceId) {
         Device device = deviceService.getDeviceForCurrentUser(deviceId);
         device.setUsers(null);
+        device.getContainerType().setDevices(null);
         return device;
     }
 

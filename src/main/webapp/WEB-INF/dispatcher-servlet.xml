@@ -52,6 +52,6 @@
     <mvc:resources mapping="/bootstrap/**" location="/WEB-INF/resources/bootstrap/"/>
     <mvc:default-servlet-handler/>
     <mvc:annotation-driven/>
-    <mvn:component-scan base-package="ru.uskov.dmitry.controller"/>
+    <mvn:component-scan base-package="ru.uskov.dmitry.controller, ru.uskov.dmitry.config"/>
 
 </beans>

@@ -81,7 +81,10 @@ public class AdminUserController {
     @ResponseBody
     public User getUserById(@RequestParam("userId") Long userId) {
         User user = userService.getUser(userId);
-        user.getDevices().stream().forEach(d -> d.setUsers(null));
+        user.getDevices().stream().forEach(d -> {
+            d.setUsers(null);
+            d.setContainerType(null);
+        });
         return user;
     }
 
