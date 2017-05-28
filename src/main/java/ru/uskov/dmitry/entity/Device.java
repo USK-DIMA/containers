@@ -21,6 +21,9 @@ public class Device extends AbstractEntity {
 
     private Date modifyData;
 
+    @Column(nullable = false, columnDefinition = "int default 0 ")
+    private Integer filling;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "UserToDeviceMap",
             joinColumns = @JoinColumn(name = "deviceId"),
@@ -34,6 +37,10 @@ public class Device extends AbstractEntity {
     private String coordinate;
 
     private String comment;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "containerTypeId", nullable = false)
+    private ContainerType containerType;
 
     public Long getId() {
         return id;
@@ -105,5 +112,21 @@ public class Device extends AbstractEntity {
 
     public void setCoordinate(String coordinate) {
         this.coordinate = coordinate;
+    }
+
+    public Integer getFilling() {
+        return filling;
+    }
+
+    public ContainerType getContainerType() {
+        return containerType;
+    }
+
+    public void setContainerType(ContainerType containerType) {
+        this.containerType = containerType;
+    }
+
+    public void setFilling(Integer filling) {
+        this.filling = filling;
     }
 }

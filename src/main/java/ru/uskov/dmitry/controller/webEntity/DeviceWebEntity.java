@@ -14,7 +14,9 @@ public class DeviceWebEntity {
     private Integer userCount;
     private String modifyData;
     private String comment;
+    private Integer filling;
     private Boolean active;
+    private String coordinates;
 
 
     public DeviceWebEntity(Device device) {
@@ -25,6 +27,17 @@ public class DeviceWebEntity {
         this.modifyData = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(device.getModifyData());
         this.active = device.getActive();
         this.comment = device.getComment();
+        this.filling = device.getFilling();
+        this.coordinates = device.getCoordinate();
+    }
+
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 
     public String getComment() {
@@ -36,6 +49,14 @@ public class DeviceWebEntity {
     }
 
     public DeviceWebEntity() {
+    }
+
+    public Integer getFilling() {
+        return filling;
+    }
+
+    public void setFilling(Integer filling) {
+        this.filling = filling;
     }
 
     public Long getId() {

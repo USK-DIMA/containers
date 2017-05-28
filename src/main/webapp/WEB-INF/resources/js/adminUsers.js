@@ -7,7 +7,7 @@ $(document).ready(function() {
     });
 
     getPassInputs().change(function() {
-        validateUserPasswordNewUserForm();
+        validateUserPasswordNewUserForm($("#createUserPassword"), $("#createUserConfirmPassword"));
     });
     $("#createUserLogin").change(function() {
         validateLoginInput($(this));
@@ -203,6 +203,17 @@ function updateDeviceTable(activeDevices) {
                     },
                     orderable: false
                 },
+                {
+                    data: 'active',
+                    render: function(data, type, row) {
+                        if(!data) {
+                            return '<span class="label label-danger">Заблокирован</span>';
+                        } else {
+                            return '<span class="label label-success">Активен</span>';
+                        }
+
+                    }
+                }
             ]
         });
     })
@@ -390,23 +401,6 @@ function updateActiveForUserInTable(userId, isActive) {
 
 }
 
-
-
-function validateLoginInput(input) {
-    var valid = validateLogin(input.val());
-    showPopover(input, !valid);
-    setValidClass(input, valid);
-    return valid;
-}
-
-
-function validateEmailInput(input) {
-    var valid = validateEmail(input.val());
-    showPopover(input, !valid);
-    setValidClass(input, valid);
-    return valid;
-}
-
 function getPassInputs() {
     return $('#createUserPassword, #createUserConfirmPassword');
 }
@@ -415,7 +409,7 @@ function showCreateUserDialog() {
     $("#createUserModaDialog").modal('show');
 }
 
-function validateUserPasswordNewUserForm() {
+/*function validateUserPasswordNewUserForm() {
     var pass = $("#createUserPassword").val();
     var confPass = $("#createUserConfirmPassword").val();
     var valid =  pass == confPass;
@@ -429,62 +423,18 @@ function validateUserPasswordNewUserForm() {
     showPopover($('#createUserConfirmPassword'), !valid);
     setValidClass(getPassInputs(), valid);
     return valid;
-}
+}*/
 
 function validateAllFieldsCreateUserForm() {
-    return (validateUserPasswordNewUserForm() & validateEmailInput($("#createUserEmail")) & validateLoginInput($("#createUserLogin"))) == true;
+    return (validateUserPasswordNewUserForm($("#createUserPassword"), $("#createUserConfirmPassword")) & validateEmailInput($("#createUserEmail")) & validateLoginInput($("#createUserLogin"))) == true;
 }
 
-/**
-   Показывает на элементе Popover, если show = true,
-   иначе скрывает
-*/
-function showPopover(element, show) {
-    if(show) {
-        element.popover('show');
-    } else {
-        element.popover('hide');
-    }
-}
-
-function setValidClass(element, isValid){
+/*function setValidClass(element, isValid){
     if(isValid) {
         element.removeClass('not-valid-input');
     } else {
         element.addClass('not-valid-input');
     }
-}
-
-function validateLogin(login) {
-    if(login == '' || login == undefined){
-        return false;
-    }
-    var valid = false;
-    $.ajax({
-        url: getContextPath() + "/admin/users/login/exist/" + login,
-        method: 'POST',
-        async: false
-    }).done(function(data) {
-        valid = !data;
-    });
-    return valid;
-}
-
-function validateEmail(email) {
-    var valid = false;
-    $.ajax({
-        url: getContextPath() + "/admin/users/email/exist",
-        data: {
-            email: email
-        },
-        method: 'POST',
-        async: false
-    }).done(function(data) {
-        valid = !data;
-        showPopover($("#createUserEmail"), !valid);
-        setValidClass($("#createUserEmail"), valid);
-    });
-    return valid;
-}
+}*/
 
 

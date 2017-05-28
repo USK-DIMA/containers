@@ -12,10 +12,7 @@ import ru.uskov.dmitry.dao.UserDao;
 import ru.uskov.dmitry.entity.Device;
 import ru.uskov.dmitry.entity.User;
 
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +65,29 @@ public class DeviceService {
         if (user == null) {
             return new LinkedHashSet<>();
         }
-        return userDao.getUser(user.getId()).getDevices();
+        return getAllActiveForUser(user.getId());
+    }
+
+    public Set<Device> getAllActiveForUser(Long userId) {
+        return userDao.getUser(userId).getDevices().stream().filter(d -> d.getActive()).collect(Collectors.toSet());
+    }
+
+    @TransactionalSupport
+    public Device getDeviceForCurrentUser(Long deviceId) {
+        return getAllActiveForCurrentUser().stream().filter(d -> d.getId().equals(deviceId)).findFirst().get();
+    }
+
+
+    @TransactionalService
+    public void updateTest(Long deviceId, Integer fullness) {
+        deviceDao.getAll().stream().forEach(device -> {
+            device.setFilling(new Random().nextInt(100));
+            device.setModifyData(new Date());
+            deviceDao.update(device);
+        });
+    }
+
+    public Collection<Device> getAllActiveForUser(Long userId, Date date) {
+        return getAllActiveForUser(userId).stream().filter(d -> d.getModifyData().after(date)).collect(Collectors.toList());
     }
 }

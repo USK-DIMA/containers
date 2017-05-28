@@ -13,5 +13,5 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 @Transactional(propagation = Propagation.MANDATORY)
-public @interface TransactionaMandatory {
+public @interface TransactionalMandatory {
 }

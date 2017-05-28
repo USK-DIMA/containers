@@ -39,6 +39,7 @@ public class AdminDeviceController {
     public Device get(@RequestParam("id") Long deviceId) {
         Device device = deviceService.get(deviceId);
         device.getUsers().stream().forEach(u -> u.setDevices(null));
+        device.getContainerType().setDevices(null);
         return device;
     }
 

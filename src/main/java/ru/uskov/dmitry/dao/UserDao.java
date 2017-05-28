@@ -5,7 +5,7 @@ import org.hibernate.classic.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-import ru.uskov.dmitry.annotation.TransactionaMandatory;
+import ru.uskov.dmitry.annotation.TransactionalMandatory;
 import ru.uskov.dmitry.annotation.TransactionalSupport;
 import ru.uskov.dmitry.entity.User;
 
@@ -24,7 +24,7 @@ public class UserDao extends AbstractDao {
         return getAll(User.class);
     }
 
-    @TransactionaMandatory
+    @TransactionalMandatory
     public void insertUsers(List<User> users) {
         Session session = getCurrentSession();
         users.stream().forEach(u -> session.persist(u));
@@ -40,12 +40,12 @@ public class UserDao extends AbstractDao {
         return (Long) fillCriteria(map).setProjection(Projections.rowCount()).uniqueResult();
     }
 
-    @TransactionaMandatory
+    @TransactionalMandatory
     public void delete(Long userId) {
         delete(User.class, userId);
     }
 
-    @TransactionaMandatory
+    @TransactionalMandatory
     public void setActive(Long userId, Boolean active) {
         Session session = getCurrentSession();
         User user = (User) session.get(User.class, userId);
@@ -53,7 +53,7 @@ public class UserDao extends AbstractDao {
         session.saveOrUpdate(user);
     }
 
-    @TransactionaMandatory
+    @TransactionalMandatory
     public void update(User user) {
         getCurrentSession().update(user);
     }

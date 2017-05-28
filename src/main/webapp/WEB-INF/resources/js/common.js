@@ -3,10 +3,6 @@ function getContextPath(){
     return "/" + pathname.substring(0, pathname.indexOf('/'));
 }
 
-function showNotification(data) {
-    console.log(data);
-}
-
 function getUrlParamMap() {
     var s1 = location.search.substring(1, location.search.length).split('&'),
         r = {}, s2, i;
@@ -43,14 +39,127 @@ function refreshPage(map) {
     window.location.href = url;
 }
 
-var animationTypeSec = 1;
 
+//Отдельны файл валидация
+function validateLoginInput(input) {
+    var valid = validateLogin(input.val());
+    showPopover(input, !valid);
+    setValidClassInput(input, valid);
+    return valid;
+}
+
+
+function validateEmailInput(input) {
+    var valid = validateEmail(input.val());
+    showPopover(input, !valid);
+    setValidClassInput(input, valid);
+    return valid;
+}
+
+function validateUserPasswordNewUserForm(pass, confirmPass) {
+    //var pass = $("#createUserPassword").val();
+    //var confPass = $("#createUserConfirmPassword").val();
+    var passValue = pass.val();
+    var confPassValue = confirmPass.val();
+    var valid =  passValue == confPassValue && passValue != undefined && passValue != '';
+    if(!valid) {
+        confirmPass.popover('show');
+        pass.addClass('not-valid-input');
+        confirmPass.addClass('not-valid-input');
+    } else {
+        confirmPass.popover('hide');
+        pass.removeClass('not-valid-input');
+        confirmPass.removeClass('not-valid-input');
+    }
+    showPopover(confirmPass, !valid);
+    setValidClassInput(pass, valid);
+    setValidClassInput(confirmPass, valid);
+    return valid;
+}
+
+function setValidClassInput(element, isValid){
+    if(isValid) {
+        element.removeClass('not-valid-input');
+    } else {
+        element.addClass('not-valid-input');
+    }
+}
+
+function validateLogin(login) {
+    if(login == '' || login == undefined){
+        return false;
+    }
+    var valid = false;
+    $.ajax({
+        url: getContextPath() + "/admin/users/login/exist/" + login,
+        method: 'POST',
+        async: false
+    }).done(function(data) {
+        valid = !data;
+    });
+    return valid;
+}
+
+function validateEmail(email) {
+    var valid = false;
+    $.ajax({
+        url: getContextPath() + "/admin/users/email/exist",
+        data: {
+            email: email
+        },
+        method: 'POST',
+        async: false
+    }).done(function(data) {
+        valid = !data;
+        showPopover($("#createUserEmail"), !valid);
+        setValidClassInput($("#createUserEmail"), valid);
+    });
+    return valid;
+}
+
+function getColorProgressBarClass(percent) {
+    if(percent<20) {
+            return '#5bc0de';
+        }
+        if(percent<50) {
+            return '#5cb85c';
+        }
+        if(percent<80) {
+            return '#f0ad4e';
+        }
+        if(percent<90) {
+            return '#d9534f';
+        }
+        return '#000000';
+}
+
+
+function validateNameInput(input) {
+    var name = $("#name").val();
+    var valid =  name != undefined && name != '';
+    setValidClassInput(input, valid);
+    return valid;
+}
+
+/**
+   Показывает на элементе Popover, если show = true,
+   иначе скрывает
+*/
+function showPopover(element, show) {
+    if(show) {
+        element.popover('show');
+    } else {
+        element.popover('hide');
+    }
+}
+
+
+//Отдельный файл notification
+var animationTypeSec = 1;
 $(document).ready(function(){
     $('body').find("#notifies").remove();
     $('body').prepend('<div id="notifies" style="z-index: 1000; transition-property: top; transition-duration: '+animationTypeSec+'s; position:fixed; width:auto; height:auto; top: -100px; right:0;">');
 });
-
-
 Notify = {
             TYPE_INFO: 0,
             TYPE_SUCCESS: 1,

@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <!--<link rel="shortcut icon" href="">-->
 
-    <title>Домашнаяя страница</title>
+    <title>Профиль</title>
 
     <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
     <!--<link th:href="@{/bootstrap/css/jumbotron.css}" rel="stylesheet">-->
@@ -27,19 +27,25 @@
             <h4 class="page-header">Общее</h4>
         </div>
         <div class="row">
-            <input th:value="${name}" class="form-control input-cl" type="text" placeholder="ФИО">
-            <input th:value="${login}" class="form-control input-cl" type="text" placeholder="Логин">
-            <input th:value="${email}" class="form-control input-cl" type="text" placeholder="Почта">
-            <button type="button" class="btn btn-primary">Сохранить</button>
+            <input id="name" th:value="${name}" class="form-control input-cl" type="text" placeholder="ФИО">
+            <input data-animation="true" data-container="body" data-placement="top" data-content="Логин занят"
+                   id="login" th:value="${login}" class="form-control input-cl" type="text" placeholder="Логин">
+            <input data-animation="true" data-container="body" data-placement="right"
+                   data-content="Почта уже используется кем-то" id="email" th:value="${email}"
+                   class="form-control input-cl" type="text" placeholder="Почта">
+            <button type="button" onclick="saveUserInfo()" class="btn btn-primary">Сохранить</button>
         </div>
         <div class="row">
-            <h4 class="page-header">Сменить праоль</h4>
+            <h4 class="page-header">Сменить пароль</h4>
         </div>
         <div class="row">
-            <input class="form-control input-cl" type="text" placeholder="Пароль">
-            <input class="form-control input-cl" type="text" placeholder="Новый пароль">
-            <input class="form-control input-cl" type="text" placeholder="Подвердите новый пароль">
-            <button type="button" class="btn btn-primary">Изменить</button>
+            <input type="password" id="oldPassword" name="oldPassword" class="form-control input-cl"
+                   placeholder="Пароль">
+            <input type="password" id="newPass" name="newPassword" class="form-control input-cl"
+                   placeholder="Новый пароль">
+            <input type="password" id="confirmNewPass" name="confirmPassword" class="form-control input-cl"
+                   placeholder="Подтвердите новый пароль">
+            <button type="button" onclick="changePassword()" class="btn btn-primary">Изменить</button>
         </div>
     </div>
     <div class="col-md-1">

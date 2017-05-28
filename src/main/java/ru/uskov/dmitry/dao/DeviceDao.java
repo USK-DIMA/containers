@@ -4,7 +4,7 @@ import org.hibernate.classic.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import ru.uskov.dmitry.annotation.TransactionaMandatory;
+import ru.uskov.dmitry.annotation.TransactionalMandatory;
 import ru.uskov.dmitry.annotation.TransactionalSupport;
 import ru.uskov.dmitry.entity.Device;
 
@@ -28,7 +28,7 @@ public class DeviceDao extends AbstractDao {
         return (Device) getCurrentSession().get(Device.class, deviceId);
     }
 
-    @TransactionaMandatory
+    @TransactionalMandatory
     public void setActive(Long deviceId, Boolean active) {
         Session session = getCurrentSession();
         Device device = (Device) session.get(Device.class, deviceId);
@@ -36,7 +36,7 @@ public class DeviceDao extends AbstractDao {
         session.saveOrUpdate(device);
     }
 
-    @TransactionaMandatory
+    @TransactionalMandatory
     public void update(Device device) {
         getCurrentSession().update(device);
     }

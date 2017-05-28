@@ -5,15 +5,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import ru.uskov.dmitry.common.Common;
+import ru.uskov.dmitry.controller.form.ChangePasswordForm;
+import ru.uskov.dmitry.controller.form.UserProfileForm;
 import ru.uskov.dmitry.controller.webEntity.DeviceWebEntity;
 import ru.uskov.dmitry.entity.User;
+import ru.uskov.dmitry.exception.ConfirmPasswordException;
+import ru.uskov.dmitry.exception.EmailAlreadyExistException;
+import ru.uskov.dmitry.exception.IncorrectPasswordException;
+import ru.uskov.dmitry.exception.LoginAlreadyExistException;
 import ru.uskov.dmitry.service.DeviceService;
 import ru.uskov.dmitry.service.UserService;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +33,7 @@ public class ProfileController {
     @Autowired
     DeviceService deviceService;
 
+    @NotNull
     @Autowired
     UserService userService;
 
@@ -45,6 +51,24 @@ public class ProfileController {
     @ResponseBody
     public List<DeviceWebEntity> getDevices() {
         return deviceService.getAllActiveForCurrentUser().stream().map(d -> new DeviceWebEntity(d)).collect(Collectors.toList());
+    }
+
+    @RequestMapping(path = "/validatePass", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean validatePass(@RequestParam("password") String password) {
+        return userService.validUserPassword(Common.getCurrentUser().getId(), password);
+    }
+
+    @RequestMapping(path = "/changePassword", method = RequestMethod.POST)
+    @ResponseBody
+    public void changePassword(@RequestBody ChangePasswordForm changePasswordForm) throws ConfirmPasswordException, IncorrectPasswordException {
+        userService.changePassword(Common.getCurrentUser().getId(), changePasswordForm);
+    }
+
+    @RequestMapping(path = "/save", method = RequestMethod.POST)
+    @ResponseBody
+    public void saveUserInfo(@RequestBody UserProfileForm userForm) throws EmailAlreadyExistException, LoginAlreadyExistException {
+        userService.updateCurrentUser(userForm.getLogin(), userForm.getEmail(), userForm.getName());
     }
 
 }
