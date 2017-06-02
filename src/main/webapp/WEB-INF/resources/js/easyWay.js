@@ -252,7 +252,7 @@ function buildEasyWay(matrix) {
         }
         startPoint = startPointPretendent[0];
         */
-        startPoint = wayArray[0];
+        startPoint = 0//wayArray[0];
         var ans = [];
         var currentPoint = startPoint;
         do {

@@ -1,6 +1,30 @@
-$(document).ready(function(){
+$(document).ready(function() {
     initDeviceTable();
+    loadStartPointCoordinate();
+
 });
+
+
+
+function loadStartPointCoordinate() {
+    $.ajax({
+        url: getContextPath() + "/common/startPoint"
+    }).done(function(data){
+        startPointCoordinates = data;
+        createStartPointPlacemark(startPointCoordinates);
+    });
+}
+
+
+function addTableRowHoverListener() {
+    $("#devices-table tbody tr").mouseenter(function(){
+        var deviceId = $(this).find('[data-device-id]').attr('data-device-id');
+        highlightDevicePoint(deviceId, true);
+    }).mouseleave(function() {
+        var deviceId = $(this).find('[data-device-id]').attr('data-device-id');
+        highlightDevicePoint(deviceId, false);
+    })
+}
 
 function getDeviceTableHeight() {
     return $(window).height() - $("#devices-table").offset().top  - $("#devices-table").height() - 35 - 25 + "px";
@@ -17,7 +41,10 @@ function initDeviceTable() {
         autoWidth: true,
         bInfo: false,
         paging: false,
-        initComplete: addTableCheckboxListener,
+        initComplete: function(){
+                addTableCheckboxListener();
+                addTableRowHoverListener();
+            },
         language: {
           "emptyTable": "Активных устройств не обнаружено"
         },
@@ -101,6 +128,7 @@ function clearDeviceMap() {
     var allCheck = $("#show-add-devices");
     allCheck.prop('checked', false).trigger('change');
     cleanMap();
+    printStartPoint();
 }
 function fillDeviceInfo(device) {
     $("#name").val(device.name);
