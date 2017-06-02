@@ -35,6 +35,16 @@ function updateContainerTableRor(rowData) {
     data.dimensions = rd.dimensions;
 
     table.row(dataAndPosition.position).data(data).draw();
+
+
+     /*table.row.add( [
+                rd.name,
+                rd.fullness,
+                rd.lastModify,
+                rd.containerNa,
+                rd.dimensions
+            ] ).draw( false );
+        }*/
 }
 
 
