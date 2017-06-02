@@ -5,6 +5,26 @@ $(document).ready(function(){
 var defaultZoom = 12;
 var isInit = false;
 var deviceMap;
+var startPointPlacemark;
+
+function createStartPointPlacemark(coordinates) {
+    ymaps.ready().done(function() {
+            startPointPlacemark = new ymaps.Placemark(coordinates, undefined, { preset: 'islands#blueHomeIcon'});
+            printStartPointPlacemark();
+            resizeMap(deviceMap);
+    });
+}
+
+function getStartPoint() {
+    return startPointPlacemark;
+}
+
+
+function printStartPointPlacemark() {
+    deviceMap.geoObjects.add(startPointPlacemark);
+}
+
+
 function initMap() {
     if(isInit){
         return;
@@ -14,7 +34,6 @@ function initMap() {
         center: [55.76, 37.64],
         zoom: defaultZoom
     });
-
 }
 
 function onePointDeviceMap(coord, hintContent, balloonContent) {
@@ -39,6 +58,7 @@ function addCollection(map, collection) {
     if(collection.getLength() == 0 ){
         return;
     }
+    collection.add(getStartPoint());
     map.geoObjects.add(collection);
     if(collection.getLength() == 1 ){
                 deviceMap.setCenter(collection.get(0).geometry.getCoordinates());
@@ -74,6 +94,21 @@ function setDeviceToMap(deviceInfo, add) {
         deviceMap.geoObjects.remove(placemark);
     }
     resizeMap(deviceMap);
+}
+
+function highlightDevicePoint(deviceId,  highlight) {
+    var placemark = currentPoints[deviceId];
+    if(placemark == undefined || placemark == null) {
+        return;
+    }
+    if(highlight) {
+        //todo выделяем метку
+        //placemark.options.set('preset', 'islands#greenIcon');
+    } else {
+        //todo убираем выделение метки
+        //placemark.options.unset('preset');
+    }
+
 }
 
 function resizeMap(map) {
@@ -125,25 +160,108 @@ function getPlacemarkStyleByPercent(percent) {
 
 function buildRows() {
     //currentPoints
-    deviceMap.geoObjects.removeAll()
+    deviceMap.geoObjects.removeAll();
     var pointCount = Object.keys(currentPoints).length;
     if(pointCount == 0) {
         return; //промис
     }
     var geoPoints = [];
+    var startPoint = getStartPoint();
+    geoPoints.push(startPoint.geometry.getCoordinates());
+    deviceMap.geoObjects.add(startPoint);
     Object.keys(currentPoints).forEach(function(v, i, a){
         var point = currentPoints[v];
-        geoPoints[i] = point.geometry.getCoordinates();
+        geoPoints.push(point.geometry.getCoordinates());
         deviceMap.geoObjects.add(point);
     });
-    ymaps.route(geoPoints).then(function (route) {
-        deviceMap.geoObjects.add(route);
+
+    optimisateGeoPoints(geoPoints).done(function(points) {
+        console.log('начинаю отрисовку');
+        ymaps.route(points).then(function (route) {
+
+            route.getPaths().options.set({strokeColor: '0000ffff', strokeWidth: 2, opacity: 0.9})
+            deviceMap.geoObjects.add(route.getPaths());
+        }, function (error) {
+            alert('Возникла ошибка: ' + error.message);
+        });
+    })
+}
+
+
+
+
+function optimisateGeoPoints(pointForOptimisate) {
+    var dfd = $.Deferred();
+
+    getTimeMatrix(pointForOptimisate).done(function(matrix) {
+        var targetPoints = pointForOptimisate;
+        console.log('начинаю проводить расщёты');
+        var easyWay = buildEasyWay(matrix);
+        console.log('Расщёты произведены. Кратчаший путь: ' + easyWay);
+        var optimisatePoints = []
+        easyWay.forEach(function(pointIndex) {
+            optimisatePoints.push(targetPoints[pointIndex]);
+        })
+        optimisatePoints.push(targetPoints[easyWay[0]])
+        console.log('передаю управление для отрисовки');
+
+        dfd.resolve(optimisatePoints);
+    })
+
+    return dfd.promise();
+}
+
+
+function getTimeMatrix(pointForOptimisate) {
+    var dfd = $.Deferred();
+    var matrix = [];
+    var pointCount = pointForOptimisate.length;
+    var matrixSize = pointCount * pointCount;
+    var cellLoaded = 0;
+
+    function incrementCellLoaded() {
+        cellLoaded++;
+        if(cellLoaded == matrixSize) {
+            console.log('матрица заполнена. Передаю управление для расчётов');
+            dfd.resolve(matrix);
+        }
+    }
+
+
+    for(var i = 0; i < pointCount; i++) {
+        matrix[i] = [];
+        for(var j = 0; j < pointCount; j++) {
+            if(i == j) {
+                matrix[i][j] = null;
+                incrementCellLoaded();
+            } else {
+                $.when(requestTime(pointForOptimisate[i], pointForOptimisate[j], i, j)).done(function(time, i, j){
+                    matrix[i][j] = time;
+                    incrementCellLoaded();
+                })
+            }
+        }
+    }
+
+    return dfd.promise();
+}
+
+function requestTime(p1, p2, rowIndex, columnIndex) {
+    var dfd = $.Deferred();
+    ymaps.route([p1, p2]).then(function (route) {
+        var pp1 = rowIndex;
+        var pp2 = columnIndex;
+        console.log('Только что получили ответ от Яндкеса. Для точек ' + pp1 + " " + pp2 + " время составило " + route.getJamsTime())
+        dfd.resolve(route.getJamsTime(), pp1, pp2);
     }, function (error) {
         alert('Возникла ошибка: ' + error.message);
     });
+    return dfd.promise();
 }
+
 
 function cleanMap() {
     deviceMap.geoObjects.removeAll();
+    printStartPointPlacemark();
 }
 

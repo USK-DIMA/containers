@@ -34,9 +34,8 @@
                         <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserAdmin || T(ru.uskov.dmitry.common.Common).currentUserManager}">
                             <a th:href="@{/admin}">Администрирование</a>
                         </li>
-                        <li><a th:href="@{/containers}">Библиотека контейнеров</a>
-                        <li><a th:href="@{/monitor}">Отслеживание</a>
-                        <li><a th:href="@{/devices}">Устройства</a>
+                        <li><a th:href="@{/monitor}">Состояние контейнеров</a>
+                        <li><a th:href="@{/devices}">Построение маршрутов</a>
                         </li>
                         <li class="divider"></li>
                         <li><a th:href="@{/logout}">Выход</a></li>
@@ -50,12 +49,15 @@
 <div id="admin-menu" class="col-sm-3 col-md-2 sidebar">
     <ul class="nav nav-sidebar">
         <!--<li><a th:href="@{/admin/service/contragents}">Контрагенты</a></li>-->
+        <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserAdmin}"><a th:href="@{/admin/settings}">Настройки
+            сервиса</a>
+        </li>
         <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserAdmin}"><a th:href="@{/admin/users}">Пользователи</a>
         </li>
         <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserManager}"><a th:href="@{/admin/devices}">Устройства</a>
         </li>
         <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserManager}"><a th:href="@{/admin/containers}">Типы
-            контейнеров</a>
+            контейнеров (alpha)</a>
         </li>
     </ul>
     <!--    <ul class="nav nav-sidebar">

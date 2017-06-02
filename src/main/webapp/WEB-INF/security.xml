@@ -8,6 +8,7 @@
         <intercept-url pattern="/admin" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')"/>
         <intercept-url pattern="/admin/users/getAll" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')"/>
         <intercept-url pattern="/admin/devices/getAll" access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')"/>
+        <intercept-url pattern="/admin/settings/**" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/admin/devices/**" access="hasRole('ROLE_MANAGER')"/>
         <intercept-url pattern="/admin/users/**" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/admin/containers/**" access="hasRole('ROLE_ADMIN')"/>
@@ -22,7 +23,6 @@
                 authentication-failure-url="/login?error"
                 username-parameter="username"
                 password-parameter="password"/>
-
         <csrf disabled="true"/>
     </http>
 

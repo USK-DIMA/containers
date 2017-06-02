@@ -56,6 +56,6 @@
     cursor: pointer;
 }
 
-#devices-table tbody tr {
-    cursor: pointer;
+tbody tr:hover {
+    background: rgba(0,0,0,0.1) !important;
 }

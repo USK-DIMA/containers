@@ -157,9 +157,30 @@ function showPopover(element, show) {
 //Отдельный файл notification
 var animationTypeSec = 1;
 $(document).ready(function(){
+
+    setDataTableLanguage();
     $('body').find("#notifies").remove();
     $('body').prepend('<div id="notifies" style="z-index: 1000; transition-property: top; transition-duration: '+animationTypeSec+'s; position:fixed; width:auto; height:auto; top: -100px; right:0;">');
 });
+
+function setDataTableLanguage(){
+
+    $.extend( true, $.fn.dataTable.defaults, {
+        "language": {
+            "lengthMenu": "Показать _MENU_ строк",
+            "zeroRecords": "Не найдено",
+            "info": "Страница _PAGE_ из _PAGES_",
+            "search": "Поиск",
+            "infoEmpty": "Нет доступных данных",
+            "paginate": {
+                  "previous": "Предыдущая",
+                  "next": "Следующая"
+                }
+            //"infoFiltered": "(filtered from _MAX_ total records)"
+        }
+    });
+}
+
 Notify = {
             TYPE_INFO: 0,
             TYPE_SUCCESS: 1,
