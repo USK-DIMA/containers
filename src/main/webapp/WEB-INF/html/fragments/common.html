@@ -34,9 +34,8 @@
                         <li th:if="${T(ru.uskov.dmitry.common.Common).currentUserAdmin || T(ru.uskov.dmitry.common.Common).currentUserManager}">
                             <a th:href="@{/admin}">Администрирование</a>
                         </li>
-                        <li><a th:href="@{/containers}">Библиотека контейнеров</a>
-                        <li><a th:href="@{/monitor}">Отслеживание</a>
-                        <li><a th:href="@{/devices}">Устройства</a>
+                        <li><a th:href="@{/monitor}">Состояние контейнеров</a>
+                        <li><a th:href="@{/devices}">Построение маршрутов</a>
                         </li>
                         <li class="divider"></li>
                         <li><a th:href="@{/logout}">Выход</a></li>
