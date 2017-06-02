@@ -14,7 +14,6 @@ function initMap() {
         center: [55.76, 37.64],
         zoom: defaultZoom
     });
-
 }
 
 function onePointDeviceMap(coord, hintContent, balloonContent) {

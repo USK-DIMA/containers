@@ -23,7 +23,6 @@
         <property name="characterEncoding" value="UTF-8"/>
         <property name="templateMode" value="HTML5"/>
     </bean>
-    `
     <bean id="templateEngine"
           class="org.thymeleaf.spring4.SpringTemplateEngine">
         <!--<property name="templateResolver" ref="templateResolver"/>-->
