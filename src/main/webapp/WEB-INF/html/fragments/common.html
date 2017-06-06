@@ -9,13 +9,13 @@
 <div id="navigator" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-collapse collapse">
-            <a class="navbar-brand" th:href="@{/}">Контейнеры</a>
+            <!--<a class="navbar-brand">Контейнеры</a>-->
             <ul class="nav navbar-nav">
                 <li th:classappend="${pageType} == 'home' ? active"><a th:href="@{/}">Домашнаяя страница</a></li>
-                <li><a>О нас</a></li>
-                <li><a>Контакты</a></li>
+                <!--<li><a>О нас</a></li>
+                <li><a>Контакты</a></li>-->
             </ul>
-            <form th:if="${T(ru.uskov.dmitry.common.Common).currentUser} == null and ${disableLoginHeader}==null"
+            <!--<form th:if="${T(ru.uskov.dmitry.common.Common).currentUser} == null and ${disableLoginHeader}==null"
                   class="navbar-form navbar-right" role="form"
                   th:action="@{/j_spring_security_check}" method="post">
                 <div class="form-group">
@@ -25,7 +25,7 @@
                     <input type="password" placeholder="Пароль" name="password" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">Войти</button>
-            </form>
+            </form>-->
             <ul th:if="${T(ru.uskov.dmitry.common.Common).currentUser} != null " class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Меню<b class="caret"></b></a>
@@ -68,7 +68,7 @@
 
 
 <footer>
-    <p>© Company 2017</p>
+    <!--<p>© Company 2017</p>-->
 </footer>
 
 

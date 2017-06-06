@@ -24,7 +24,7 @@ public class MonitorTableForm {
         lastModify = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(d.getModifyData());
         containerName = d.getContainerType().getName();
         Integer w = d.getContainerType().getWidth();
-        Integer h = d.getContainerType().getLenght();
+        Integer h = d.getContainerType().getHeight();
         Integer l = d.getContainerType().getLenght();
         volume = w * h * l;
         dimensions = h + "*" + w + "*" + l;

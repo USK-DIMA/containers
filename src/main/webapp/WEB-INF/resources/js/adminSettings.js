@@ -1,5 +1,5 @@
 var DEFAULT_START_POINT_MAP_ZOOM = 12;
-var DEFAULT_START_POINT_MAP_CENTER = [55.76, 37.64];
+var DEFAULT_START_POINT_MAP_CENTER = [55.9826, 37.20781];
 var startPointMap;
 var startPointLoaded = $.Deferred();
 var startPointIntValue;
