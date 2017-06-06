@@ -8,38 +8,46 @@ import java.util.Set;
  * Created by Dmitry on 23.04.2017.
  */
 @Entity
-@Table(name = "Device")
+@Table(name = "device")
 public class Device extends AbstractEntity {
 
     @Id
     @GeneratedValue
+    @Column(name = "device_id")
     private Long id;
 
+    @Column(name = "creation_date")
     private Date createData;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "last_modified")
     private Date modifyData;
 
-    @Column(nullable = false, columnDefinition = "int default 0 ")
+    @Column(nullable = false, columnDefinition = "int default 0 ", name = "fullness")
     private Integer filling;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "UserToDeviceMap",
-            joinColumns = @JoinColumn(name = "deviceId"),
-            inverseJoinColumns = @JoinColumn(name = "userId"))
+    @JoinTable(name = "device_client_junction",
+            joinColumns = @JoinColumn(name = "device_id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id"))
     private Set<User> users;
 
+    @Column(name = "active_status")
     private Boolean active;
 
+    @Column(name = "new_device")
     private boolean newDevice;
 
+    @Column(name = "coordinates")
     private String coordinate;
 
+    @Column(name = "comment")
     private String comment;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "containerTypeId", nullable = false)
+    @JoinColumn(name = "container_type_id", nullable = false)
     private ContainerType containerType;
 
     public Long getId() {

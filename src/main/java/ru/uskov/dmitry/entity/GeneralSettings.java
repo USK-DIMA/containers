@@ -2,10 +2,7 @@ package ru.uskov.dmitry.entity;
 
 import ru.uskov.dmitry.enums.GeneralSettingType;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by Dmitry on 02.06.2017.
@@ -15,6 +12,7 @@ public class GeneralSettings extends AbstractEntity {
 
     @Id
     @Enumerated(EnumType.STRING)
+    @Column(name = "setting_type")
     private GeneralSettingType type;
     private String value;
 

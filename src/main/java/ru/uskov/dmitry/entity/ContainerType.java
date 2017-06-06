@@ -9,17 +9,30 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "ContainerType")
+@Table(name = "container_type")
 public class ContainerType extends AbstractEntity {
 
     @Id
     @GeneratedValue
+    @Column(name = "type_id")
     private Long id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "container_description")
     private String description;
+
+    @Column(name = "height")
     private Integer height;
+
+    @Column(name = "width")
     private Integer width;
+
+    @Column(name = "length")
     private Integer lenght;
+
+    @Column(name = "create_date")
     private Date createDate;
 
 

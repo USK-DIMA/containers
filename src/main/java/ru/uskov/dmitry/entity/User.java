@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by Dmitry on 11.03.2017.
  */
 @Entity
-@Table(name = "User_", uniqueConstraints = {
+@Table(name = "client", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email"),
         @UniqueConstraint(columnNames = "login")
 })
@@ -17,24 +17,37 @@ public class User extends AbstractEntity {
 
     @Id
     @GeneratedValue
+    @Column(name = "client_id")
     private Long id;
 
+
+    @Column(name = "login")
     private String login;
 
+
+    @Column(name = "password")
     private String password;
 
+
+    @Column(name = "email")
     private String email;
 
+
+    @Column(name = "comment")
     private String comment;
 
+
+    @Column(name = "name")
     private String name;
 
+
+    @Column(name = "active")
     private Boolean active;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "UserToDeviceMap",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "deviceId"))
+    @JoinTable(name = "device_client_junction",
+            joinColumns = @JoinColumn(name = "client_id"),
+            inverseJoinColumns = @JoinColumn(name = "device_id"))
     private Set<Device> devices;
 
     @ElementCollection(fetch = FetchType.EAGER)
