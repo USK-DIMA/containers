@@ -31,27 +31,25 @@ public class AdminDeviceController {
     @RequestMapping(path = "/getAll", method = RequestMethod.GET)
     @ResponseBody
     public List<DeviceWebEntity> getAll() {
-        return deviceService.getAll().stream().map(d -> new DeviceWebEntity((d))).collect(Collectors.toList());
+        return deviceService.getAllWithUserCount().stream().map(d -> new DeviceWebEntity((d))).collect(Collectors.toList());
     }
 
     @RequestMapping(path = "/get", method = RequestMethod.GET)
     @ResponseBody
-    public Device get(@RequestParam("id") Long deviceId) {
-        Device device = deviceService.get(deviceId);
-        device.getUsers().stream().forEach(u -> u.setDevices(null));
-        device.getContainerType().setDevices(null);
+    public Device get(@RequestParam("id") Integer deviceId) {
+        Device device = deviceService.getWithUserIds(deviceId);
         return device;
     }
 
     @RequestMapping(path = "/update/{deviceId}", method = RequestMethod.POST)
     @ResponseBody
-    public void updateDevice(@PathVariable("deviceId") Long deviceId, @RequestBody() DeviceForm deviceForm) {
+    public void updateDevice(@PathVariable("deviceId") Integer deviceId, @RequestBody() DeviceForm deviceForm) {
         deviceService.update(deviceId, deviceForm.getName(), deviceForm.getComment(), deviceForm.getUsersId());
     }
 
     @RequestMapping(path = "/setActive", method = RequestMethod.POST)
     @ResponseBody
-    public void setActive(@RequestParam("deviceId") Long deviceId, @RequestParam("active") Boolean active) {
+    public void setActive(@RequestParam("deviceId") Integer deviceId, @RequestParam("active") Boolean active) {
         deviceService.setActive(deviceId, active);
     }
 

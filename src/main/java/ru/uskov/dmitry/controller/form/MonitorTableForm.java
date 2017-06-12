@@ -9,12 +9,12 @@ import java.text.SimpleDateFormat;
  */
 public class MonitorTableForm {
 
-    private Long id;
+    private Integer id;
     private String name;
     private Integer fullness;
     private String lastModify;
     private String containerName;
-    private Integer volume;
+    private Double volume;
     private String dimensions;
 
     public MonitorTableForm(Device d) {
@@ -23,9 +23,9 @@ public class MonitorTableForm {
         fullness = d.getFilling();
         lastModify = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(d.getModifyData());
         containerName = d.getContainerType().getName();
-        Integer w = d.getContainerType().getWidth();
-        Integer h = d.getContainerType().getHeight();
-        Integer l = d.getContainerType().getLenght();
+        Double w = d.getContainerType().getWidth();
+        Double h = d.getContainerType().getHeight();
+        Double l = d.getContainerType().getLenght();
         volume = w * h * l;
         dimensions = h + "*" + w + "*" + l;
     }
@@ -33,11 +33,11 @@ public class MonitorTableForm {
     public MonitorTableForm() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -73,11 +73,11 @@ public class MonitorTableForm {
         this.containerName = containerName;
     }
 
-    public Integer getVolume() {
+    public Double getVolume() {
         return volume;
     }
 
-    public void setVolume(Integer volume) {
+    public void setVolume(Double volume) {
         this.volume = volume;
     }
 

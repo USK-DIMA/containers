@@ -9,18 +9,18 @@ import java.util.stream.Collectors;
  * Created by Dmitry on 22.04.2017.
  */
 public class UserWebEntity {
-    protected Long id;
+    protected Integer id;
     protected String fio;
     protected String login;
     protected String email;
     protected Set<String> roles;
-    protected Integer deviceCount;
+    protected Long deviceCount;
     protected Boolean active;
 
     public UserWebEntity() {
     }
 
-    public UserWebEntity(Long id, String fio, String login, String email, Set<String> roles, Integer deviceCount, Boolean active) {
+    public UserWebEntity(Integer id, String fio, String login, String email, Set<String> roles, Long deviceCount, Boolean active) {
         this.id = id;
         this.fio = fio;
         this.login = login;
@@ -36,15 +36,15 @@ public class UserWebEntity {
         this.login = user.getLogin();
         this.email = user.getEmail();
         this.roles = user.getRoles().stream().map(r -> r.name()).collect(Collectors.toSet());
-        this.deviceCount = user.getDevices().size();
+        this.deviceCount = (Long) user.getValue(User.DEVICE_COUNT);
         this.active = user.getActive();
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -80,11 +80,11 @@ public class UserWebEntity {
         this.roles = roles;
     }
 
-    public Integer getDeviceCount() {
+    public Long getDeviceCount() {
         return deviceCount;
     }
 
-    public void setDeviceCount(Integer deviceCount) {
+    public void setDeviceCount(Long deviceCount) {
         this.deviceCount = deviceCount;
     }
 
@@ -102,7 +102,7 @@ public class UserWebEntity {
             return new UserWebEntity(id, fio, login, email, roles, deviceCount, active);
         }
 
-        public UserWebEntity.Builder id(Long id) {
+        public UserWebEntity.Builder id(Integer id) {
             this.id = id;
             return this;
         }
@@ -129,7 +129,7 @@ public class UserWebEntity {
             return this;
         }
 
-        public UserWebEntity.Builder deviceCount(Integer deviceCount) {
+        public UserWebEntity.Builder deviceCount(Long deviceCount) {
             this.deviceCount = deviceCount;
             return this;
         }

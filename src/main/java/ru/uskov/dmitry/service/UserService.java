@@ -2,14 +2,13 @@ package ru.uskov.dmitry.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.uskov.dmitry.annotation.TransactionalMandatory;
 import ru.uskov.dmitry.annotation.TransactionalService;
 import ru.uskov.dmitry.annotation.TransactionalSupport;
-import ru.uskov.dmitry.common.CollectionUtils;
 import ru.uskov.dmitry.common.Common;
 import ru.uskov.dmitry.controller.form.ChangePasswordForm;
 import ru.uskov.dmitry.dao.DeviceDao;
 import ru.uskov.dmitry.dao.UserDao;
-import ru.uskov.dmitry.entity.Device;
 import ru.uskov.dmitry.entity.User;
 import ru.uskov.dmitry.enums.UserRole;
 import ru.uskov.dmitry.exception.ConfirmPasswordException;
@@ -17,7 +16,10 @@ import ru.uskov.dmitry.exception.EmailAlreadyExistException;
 import ru.uskov.dmitry.exception.IncorrectPasswordException;
 import ru.uskov.dmitry.exception.LoginAlreadyExistException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -37,54 +39,20 @@ public class UserService extends AbstractService {
 
     @TransactionalService
     public List<User> loadAllUsers() {
-        return userDao.getAll();
+        return userDao.getAllWithRolesAndDeviceCount();
     }
 
     @TransactionalService
-    public void saveTestUser() {
-        final int size = 10;
-        List<User> users = new ArrayList<>(size);
-
-        {
-            User user = new User();
-            user.setActive(true);
-            user.setEmail("admin@gmail.com");
-            user.setLogin("admin");
-            user.setName("Усков Дмитрий Юрьевич");
-            user.setPassword("123");
-            Set<UserRole> roleSet = new HashSet<>();
-            roleSet.add(UserRole.ROLE_ADMIN);
-            roleSet.add(UserRole.ROLE_MANAGER);
-            user.setRoles(roleSet);
-            users.add(user);
-        }
-
-        for (int i = 0; i < size; i++) {
-            User user = new User();
-            user.setActive(i % 2 == 0);
-            user.setEmail("user" + i + "@gmail.com");
-            user.setLogin("login" + i);
-            user.setName("name" + i);
-            user.setPassword("pass");
-            Set<UserRole> roleSet = new HashSet<>();
-            roleSet.add(UserRole.ROLE_ADMIN);
-            roleSet.add(UserRole.ROLE_MANAGER);
-            user.setRoles(roleSet);
-            users.add(user);
-        }
-        userDao.insertUsers(users);
-    }
-
-    @TransactionalService
-    public User loadActiveUserByLogin(String login) {
-        List<User> users = userDao.getByFieldEq(getMap("login", login).end("active", new Boolean(true)));
-        return CollectionUtils.getFirst(users);
+    public User loadUserByLoginWithRoles(String login, boolean onlyActive) {
+        User user = userDao.getByLoginWithRoles(login, onlyActive);
+        return user;
     }
 
     @TransactionalService
     public void createUser(User newUser) throws EmailAlreadyExistException, LoginAlreadyExistException {
         checkLoginAndEmail(newUser);
-        userDao.insertUsers(Collections.singletonList(newUser));
+        Integer userId = userDao.insertUser(newUser);
+        userDao.insertUserRoles(userId, newUser.getRoles());
     }
 
     @TransactionalSupport
@@ -93,8 +61,8 @@ public class UserService extends AbstractService {
     }
 
     @TransactionalSupport
-    private void checkLoginAndEmail(Long userId, String login, String email) throws EmailAlreadyExistException, LoginAlreadyExistException {
-        List<User> allUsers = loadAllUsers().stream().filter(u -> !u.getId().equals(userId)).collect(Collectors.toList());
+    private void checkLoginAndEmail(Integer userId, String login, String email) throws EmailAlreadyExistException, LoginAlreadyExistException {
+        List<User> allUsers = userDao.loadAllWithout(userId);
         List<String> emails = allUsers.stream().map(u -> u.getEmail()).collect(Collectors.toList());
         List<String> logins = allUsers.stream().map(u -> u.getLogin()).collect(Collectors.toList());
         if (emails.contains(email)) {
@@ -108,50 +76,56 @@ public class UserService extends AbstractService {
 
     @TransactionalSupport
     public boolean loginExist(String login) {
-        return userDao.getByFieldEqCount(getMapEnd("login", login)) != 0;
+        return userDao.loginExist(login);
     }
 
     @TransactionalSupport
     public boolean emailExist(String email) {
-        return userDao.getByFieldEqCount(getMapEnd("email", email)) != 0;
+        return userDao.emailExist(email);
     }
 
     @TransactionalService
-    public void delete(Long userId) {
+    public void delete(Integer userId) {
         userDao.delete(userId);
     }
 
     @TransactionalService
-    public void setActive(Long userId, Boolean active) {
+    public void setActive(Integer userId, Boolean active) {
         userDao.setActive(userId, active);
     }
 
 
     @TransactionalService
-    public void updateUser(User user, Set<Long> deviceId) throws LoginAlreadyExistException, EmailAlreadyExistException {
+    public void updateUser(User user, Set<Integer> deviceId) throws LoginAlreadyExistException, EmailAlreadyExistException {
         checkLoginAndEmail(user);
-        List<Device> devices = new LinkedList<>();
-        if (!CollectionUtils.isEmpty(deviceId)) {
-            devices = deviceDao.get(deviceId);
-        }
-        User forUpdate = userDao.getUser(user.getId());
-        forUpdate.setComment(user.getComment());
-        forUpdate.setEmail(user.getEmail());
-        forUpdate.setName(user.getName());
-        forUpdate.setLogin(user.getLogin());
-        forUpdate.setRoles(user.getRoles());
-        forUpdate.setDevices(devices.stream().collect(Collectors.toSet()));
-        userDao.update(forUpdate);
-        common.updateCurrentUser();
+
+        userDao.update(user.getId(), user.getLogin(), user.getEmail(), user.getName(), user.getComment());
+
+        saveUserRoles(user.getId(), user.getRoles());
+        saveUserDevices(user.getId(), deviceId);
+    }
+
+    @TransactionalMandatory
+    private void saveUserDevices(Integer userId, Collection<Integer> deviceIds) {
+        userDao.deleteUserDeviceMap(userId);
+        userDao.insertUserDeviceMap(userId, deviceIds);
+
+    }
+
+    @TransactionalMandatory
+    private void saveUserRoles(Integer userId, Collection<UserRole> roles) {
+        userDao.deleteRoles(userId);
+        userDao.insertUserRoles(userId, roles);
     }
 
     @TransactionalSupport
-    public User getUser(Long userId) {
-        return userDao.getUser(userId);
+    public User getUser(Integer userId) {
+        User user = userDao.getUsersWithRoles(Collections.singleton(userId)).get(0);
+        return user;
     }
 
     @TransactionalService
-    public void changePassword(Long userId, ChangePasswordForm changePasswordForm) throws IncorrectPasswordException, ConfirmPasswordException {
+    public void changePassword(Integer userId, ChangePasswordForm changePasswordForm) throws IncorrectPasswordException, ConfirmPasswordException {
         User user = userDao.getUser(userId);
         if (!changePasswordForm.getOldPassword().equals(user.getPassword())) {
             throw new IncorrectPasswordException();
@@ -159,13 +133,13 @@ public class UserService extends AbstractService {
         if (!changePasswordForm.getNewPassword().equals(changePasswordForm.getConfirmPassword())) {
             throw new ConfirmPasswordException();
         }
-        user.setPassword(changePasswordForm.getNewPassword());
-        userDao.update(user);
+
+        userDao.updatePassword(userId, changePasswordForm.getNewPassword());
         common.updateCurrentUser();
     }
 
     @TransactionalSupport
-    public boolean validUserPassword(Long userId, String password) {
+    public boolean validUserPassword(Integer userId, String password) {
         return userDao.getUser(userId).getPassword().equals(password);
     }
 
@@ -173,11 +147,16 @@ public class UserService extends AbstractService {
     public void updateCurrentUser(String login, String email, String name) throws LoginAlreadyExistException, EmailAlreadyExistException {
         User user = common.getUpdatedCurrentUser();
         checkLoginAndEmail(user.getId(), login, email);
-        user.setLogin(login);
-        user.setEmail(email);
-        user.setName(name);
-        userDao.update(user);
+        userDao.update(user.getId(), login, email, name, null);
         common.updateCurrentUser();
     }
 
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public User getUserWithDevicesIds(Integer userId) {
+        return userDao.getUserWithDevicesIds(userId);
+    }
 }

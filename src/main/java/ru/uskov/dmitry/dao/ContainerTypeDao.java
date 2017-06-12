@@ -1,6 +1,5 @@
 package ru.uskov.dmitry.dao;
 
-import org.hibernate.classic.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -19,12 +18,12 @@ public class ContainerTypeDao extends AbstractDao {
 
     @TransactionalMandatory
     public void save(ContainerType containerType) {
-        Session session = getCurrentSession();
-        session.saveOrUpdate(containerType);
+        //todo
     }
 
     @TransactionalSupport
     public List<ContainerType> loadAll() {
-        return this.getAll(ContainerType.class);
+        //todo
+        return null;
     }
 }

@@ -172,10 +172,13 @@ function setDataTableLanguage(){
             "info": "Страница _PAGE_ из _PAGES_",
             "search": "Поиск",
             "infoEmpty": "Нет доступных данных",
+            "loadingRecords": "Загрузка...",
             "paginate": {
                   "previous": "Предыдущая",
                   "next": "Следующая"
                 }
+                //Loading...
+                //emptyTable
             //"infoFiltered": "(filtered from _MAX_ total records)"
         }
     });

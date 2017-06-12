@@ -6,13 +6,13 @@ public class DeviceForm {
 
     private String name;
     private String comment;
-    private Set<Long> usersId;
+    private Set<Integer> usersId;
 
-    public Set<Long> getUsersId() {
+    public Set<Integer> getUsersId() {
         return usersId;
     }
 
-    public void setUsersId(Set<Long> usersId) {
+    public void setUsersId(Set<Integer> usersId) {
         this.usersId = usersId;
     }
 

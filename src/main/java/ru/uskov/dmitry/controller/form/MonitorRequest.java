@@ -6,7 +6,7 @@ package ru.uskov.dmitry.controller.form;
 public class MonitorRequest {
 
     private Long timestamp;
-    private Long userId;
+    private Integer userId;
 
     public Long getTimestamp() {
         return timestamp;
@@ -16,11 +16,11 @@ public class MonitorRequest {
         this.timestamp = timestamp;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 }

@@ -60,13 +60,13 @@ public class AdminUserController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
-    public void deleteUser(@RequestParam("id") Long userId) {
+    public void deleteUser(@RequestParam("id") Integer userId) {
         userService.delete(userId);
     }
 
     @RequestMapping(value = "/setActive", method = RequestMethod.POST)
     @ResponseBody
-    public boolean setActive(@RequestParam("id") Long userId, @RequestParam("active") Boolean active) {
+    public boolean setActive(@RequestParam("id") Integer userId, @RequestParam("active") Boolean active) {
         userService.setActive(userId, active);
         return userService.getUser(userId).getActive();
     }
@@ -79,13 +79,8 @@ public class AdminUserController {
 
     @RequestMapping(value = "/getUserInfo", method = RequestMethod.GET)
     @ResponseBody
-    public User getUserById(@RequestParam("userId") Long userId) {
-        User user = userService.getUser(userId);
-        user.getDevices().stream().forEach(d -> {
-            d.setUsers(null);
-            d.setContainerType(null);
-        });
-        return user;
+    public User getUserById(@RequestParam("userId") Integer userId) {
+        return userService.getUserWithDevicesIds(userId);
     }
 
 }

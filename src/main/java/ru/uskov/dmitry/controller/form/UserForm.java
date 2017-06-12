@@ -9,13 +9,13 @@ import java.util.Set;
  */
 public class UserForm extends User {
 
-    private Set<Long> deviceId;
+    private Set<Integer> deviceId;
 
-    public Set<Long> getDeviceId() {
+    public Set<Integer> getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(Set<Long> deviceId) {
+    public void setDeviceId(Set<Integer> deviceId) {
         this.deviceId = deviceId;
     }
 }

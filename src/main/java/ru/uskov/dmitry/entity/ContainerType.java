@@ -1,6 +1,7 @@
 package ru.uskov.dmitry.entity;
 
-import javax.persistence.*;
+import com.querydsl.core.annotations.QueryProjection;
+
 import java.util.Date;
 import java.util.List;
 
@@ -8,36 +9,27 @@ import java.util.List;
  * Created by Dmitry on 27.05.2017.
  */
 
-@Entity
-@Table(name = "container_type")
+
 public class ContainerType extends AbstractEntity {
-
-    @Id
-    @GeneratedValue
-    @Column(name = "type_id")
     private Long id;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "container_description")
     private String description;
-
-    @Column(name = "height")
-    private Integer height;
-
-    @Column(name = "width")
-    private Integer width;
-
-    @Column(name = "length")
-    private Integer lenght;
-
-    @Column(name = "create_date")
+    private Double height;
+    private Double width;
+    private Double lenght;
     private Date createDate;
-
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "containerType")
     private List<Device> devices;
+
+    public ContainerType() {
+    }
+
+    @QueryProjection
+    public ContainerType(String name, Double height, Double width, Double lenght) {
+        this.name = name;
+        this.height = height;
+        this.width = width;
+        this.lenght = lenght;
+    }
 
     public Long getId() {
         return id;
@@ -63,27 +55,27 @@ public class ContainerType extends AbstractEntity {
         this.description = description;
     }
 
-    public Integer getHeight() {
+    public Double getHeight() {
         return height;
     }
 
-    public void setHeight(Integer height) {
+    public void setHeight(Double height) {
         this.height = height;
     }
 
-    public Integer getWidth() {
+    public Double getWidth() {
         return width;
     }
 
-    public void setWidth(Integer width) {
+    public void setWidth(Double width) {
         this.width = width;
     }
 
-    public Integer getLenght() {
+    public Double getLenght() {
         return lenght;
     }
 
-    public void setLenght(Integer lenght) {
+    public void setLenght(Double lenght) {
         this.lenght = lenght;
     }
 

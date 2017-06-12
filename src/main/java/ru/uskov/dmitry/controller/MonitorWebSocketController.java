@@ -23,15 +23,11 @@ public class MonitorWebSocketController {
     @Autowired
     private DeviceService deviceService;
 
-    public MonitorWebSocketController() {
-        System.out.println("MonitorWebSocketController has created");
-    }
-
     @MessageMapping("/getNew")
     @SendTo("/topic/getNew")
     public MonitorTableContainer getNewForUser(MonitorRequest monitorRequest) throws Exception {
         Long newTimestamp = new Date().getTime();
-        List<MonitorTableForm> forms = MonitorController.convert(deviceService.getAllActiveForUser(monitorRequest.getUserId(), new Date(monitorRequest.getTimestamp())));
+        List<MonitorTableForm> forms = MonitorController.convert(deviceService.getDeviceWithContainerType(monitorRequest.getUserId(), new Date(monitorRequest.getTimestamp()), true));
         return new MonitorTableContainer(newTimestamp, forms);
     }
 

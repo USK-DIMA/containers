@@ -1,60 +1,70 @@
 package ru.uskov.dmitry.entity;
 
-import javax.persistence.*;
+import com.querydsl.core.annotations.QueryProjection;
+
 import java.util.Date;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-/**
- * Created by Dmitry on 23.04.2017.
- */
-@Entity
-@Table(name = "device")
 public class Device extends AbstractEntity {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "device_id")
-    private Long id;
-
-    @Column(name = "creation_date")
+    public static String USER_COUNT = "USER_COUNT";
+    private Integer id;
     private Date createData;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "last_modified")
     private Date modifyData;
-
-    @Column(nullable = false, columnDefinition = "int default 0 ", name = "fullness")
     private Integer filling;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "device_client_junction",
-            joinColumns = @JoinColumn(name = "device_id"),
-            inverseJoinColumns = @JoinColumn(name = "client_id"))
     private Set<User> users;
-
-    @Column(name = "active_status")
     private Boolean active;
-
-    @Column(name = "new_device")
     private boolean newDevice;
-
-    @Column(name = "coordinates")
     private String coordinate;
-
-    @Column(name = "comment")
     private String comment;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "container_type_id", nullable = false)
     private ContainerType containerType;
 
-    public Long getId() {
+
+    @QueryProjection
+    public Device(Integer id, Date createData, String name, Date modifyData, Integer filling, Boolean active, boolean newDevice, Double latitude, Double longitude, String comment) {
+        this.id = id;
+        this.createData = createData;
+        this.name = name;
+        this.modifyData = modifyData;
+        this.filling = filling;
+        this.active = active;
+        this.newDevice = newDevice;
+        this.coordinate = latitude + "," + longitude;
+        this.comment = comment;
+    }
+
+    @QueryProjection
+    public Device(Integer id, Date createData, String name, Date modifyData, Integer filling, Boolean active, boolean newDevice, Double latitude, Double longitude, String comment, Long userCount) {
+        this(id, createData, name, modifyData, filling, active, newDevice, latitude, longitude, comment);
+        addField(USER_COUNT, userCount);
+    }
+
+    @QueryProjection
+    public Device(Integer id, Date createData, String name, Date modifyData, Integer filling, Boolean active, boolean newDevice, Double latitude, Double longitude, String comment, ContainerType containerType) {
+        this(id, createData, name, modifyData, filling, active, newDevice, latitude, longitude, comment);
+        this.containerType = containerType;
+    }
+
+    @QueryProjection
+    public Device(Integer id, Date createData, String name, Date modifyData, Integer filling, Boolean active, boolean newDevice, Double latitude, Double longitude, String comment, Set<Integer> userIds) {
+        this(id, createData, name, modifyData, filling, active, newDevice, latitude, longitude, comment);
+        this.users = userIds.stream().map(userId -> new User(userId)).collect(Collectors.toSet());
+    }
+
+    public Device(Integer id) {
+        this.id = id;
+    }
+
+    public Device() {
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -12,8 +12,10 @@ import ru.uskov.dmitry.dao.UserDao;
 import ru.uskov.dmitry.entity.Device;
 import ru.uskov.dmitry.entity.User;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Dmitry on 23.04.2017.
@@ -29,65 +31,46 @@ public class DeviceService {
     private UserDao userDao;
 
     @TransactionalSupport
-    public List<Device> getAll() {
-        return deviceDao.getAll();
+    public List<Device> getAllWithUserCount() {
+        return deviceDao.getAllWithUserCount();
     }
 
     @TransactionalSupport
-    public Device get(Long deviceId) {
-        return deviceDao.get(deviceId);
+    public Device getWithUserIds(Integer deviceId) {
+        return deviceDao.getWithUserIds(deviceId);
+    }
+
+    @TransactionalSupport
+    public Device getActive(Integer userId, Integer deviceId) {
+        return deviceDao.getActive(userId, deviceId);
     }
 
     @TransactionalService
-    public void setActive(Long deviceId, Boolean active) {
+    public void setActive(Integer deviceId, Boolean active) {
         deviceDao.setActive(deviceId, active);
     }
 
     @TransactionalService
-    public void update(Long deviceId, String name, String comment, Set<Long> usersId) {
-        Device device = deviceDao.get(deviceId);
-        device.setName(name);
-        List<User> users = getUsers(usersId);
-        device.setUsers(users.stream().collect(Collectors.toSet()));
-        device.setComment(comment);
-        deviceDao.update(device);
+    public void update(Integer deviceId, String name, String comment, Set<Integer> usersId) {
+        deviceDao.update(deviceId, name, comment);
+        deviceDao.deleteUsers(deviceId);
+        deviceDao.insertUsers(deviceId, usersId);
     }
 
-    private List<User> getUsers(Set<Long> usersId) {
-        if (usersId == null || usersId.size() == 0) {
-            return new LinkedList<>();
-        }
-        return userDao.getUsers(usersId);
-    }
-
-    public Set<Device> getAllActiveForCurrentUser() {
+    public List<Device> getAllActiveForCurrentUser() {
         User user = Common.getCurrentUser();
         if (user == null) {
-            return new LinkedHashSet<>();
+            return new LinkedList<>();
         }
         return getAllActiveForUser(user.getId());
     }
 
-    public Set<Device> getAllActiveForUser(Long userId) {
-        return userDao.getUser(userId).getDevices().stream().filter(d -> d.getActive()).collect(Collectors.toSet());
+    public List<Device> getAllActiveForUser(Integer userId) {
+        return deviceDao.getForUserLastModify(userId);
     }
 
     @TransactionalSupport
-    public Device getDeviceForCurrentUser(Long deviceId) {
-        return getAllActiveForCurrentUser().stream().filter(d -> d.getId().equals(deviceId)).findFirst().get();
-    }
-
-
-    @TransactionalService
-    public void updateTest(Long deviceId, Integer fullness) {
-        deviceDao.getAll().stream().forEach(device -> {
-            device.setFilling(new Random().nextInt(100));
-            device.setModifyData(new Date());
-            deviceDao.update(device);
-        });
-    }
-
-    public Collection<Device> getAllActiveForUser(Long userId, Date date) {
-        return getAllActiveForUser(userId).stream().filter(d -> d.getModifyData().after(date)).collect(Collectors.toList());
+    public List<Device> getDeviceWithContainerType(Integer userId, Date date, boolean onlyActive) {
+        return deviceDao.getDeviceWithContainerType(userId, date, onlyActive);
     }
 }

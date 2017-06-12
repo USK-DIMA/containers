@@ -29,12 +29,12 @@ public class SettingsService {
 
     @TransactionalService
     public void saveSettings(GeneralSettings settings) {
-        settingsDao.save(formToEntity(settings));
+        settingsDao.update(formToEntity(settings));
     }
 
     @TransactionalService
     public void saveStartPointCoordinate(Double[] coordinate) {
-        settingsDao.save(new SpecialSettings(SpecialSettingsType.START_POINT_COORDINATE, coordinate));
+        settingsDao.update(new SpecialSettings(SpecialSettingsType.START_POINT_COORDINATE, coordinate));
     }
 
     @TransactionalService
