@@ -12,9 +12,9 @@ public class ContainerTypeForm {
     private Long id;
     private String name;
     private Date create;
-    private Integer width;
-    private Integer height;
-    private Integer lenght;
+    private Double width;
+    private Double height;
+    private Double lenght;
     private Integer deviceCount;
 
     public ContainerTypeForm(ContainerType typeEntity) {
@@ -54,27 +54,27 @@ public class ContainerTypeForm {
         this.create = create;
     }
 
-    public Integer getWidth() {
+    public Double getWidth() {
         return width;
     }
 
-    public void setWidth(Integer width) {
+    public void setWidth(Double width) {
         this.width = width;
     }
 
-    public Integer getHeight() {
+    public Double getHeight() {
         return height;
     }
 
-    public void setHeight(Integer height) {
+    public void setHeight(Double height) {
         this.height = height;
     }
 
-    public Integer getLenght() {
+    public Double getLenght() {
         return lenght;
     }
 
-    public void setLenght(Integer lenght) {
+    public void setLenght(Double lenght) {
         this.lenght = lenght;
     }
 

@@ -8,10 +8,10 @@ import java.text.SimpleDateFormat;
  * Created by Dmitry on 23.04.2017.
  */
 public class DeviceWebEntity {
-    private Long id;
+    private Integer id;
     private String createData;
     private String name;
-    private Integer userCount;
+    private Long userCount;
     private String modifyData;
     private String comment;
     private Integer filling;
@@ -23,7 +23,7 @@ public class DeviceWebEntity {
         this.id = device.getId();
         this.createData = new SimpleDateFormat("yyyy-MM-dd").format(device.getCreateData());
         this.name = device.getName();
-        this.userCount = device.getUsers().size();
+        this.userCount = (Long) device.getValue(Device.USER_COUNT);
         this.modifyData = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(device.getModifyData());
         this.active = device.getActive();
         this.comment = device.getComment();
@@ -59,11 +59,11 @@ public class DeviceWebEntity {
         this.filling = filling;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -83,11 +83,11 @@ public class DeviceWebEntity {
         this.name = name;
     }
 
-    public Integer getUserCount() {
+    public Long getUserCount() {
         return userCount;
     }
 
-    public void setUserCount(Integer userCount) {
+    public void setUserCount(Long userCount) {
         this.userCount = userCount;
     }
 

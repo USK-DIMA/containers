@@ -1,51 +1,74 @@
 package ru.uskov.dmitry.entity;
 
+import com.querydsl.core.annotations.QueryProjection;
 import ru.uskov.dmitry.enums.UserRole;
+import ru.uskov.dmitry.validator.annotataions.NewUser;
 
-import javax.persistence.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-/**
- * Created by Dmitry on 11.03.2017.
- */
-@Entity
-@Table(name = "User_", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email"),
-        @UniqueConstraint(columnNames = "login")
-})
+@NewUser
 public class User extends AbstractEntity {
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
+    public static String DEVICE_COUNT = "DEVICE_COUNT";
+    private Integer id;
     private String login;
-
     private String password;
-
     private String email;
-
     private String comment;
-
     private String name;
-
     private Boolean active;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "UserToDeviceMap",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "deviceId"))
     private Set<Device> devices;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
     private Set<UserRole> roles;
 
-    public Long getId() {
+
+    @QueryProjection
+    public User(Integer id, String login, String password, String email, String comment, String name, Boolean active) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.comment = comment;
+        this.name = name;
+        this.active = active;
+    }
+
+    public User(Integer id) {
+        this.id = id;
+    }
+
+    @QueryProjection
+    public User(Integer id, String login, String password, String email, String comment, String name, Boolean active, Set<String> roles) {
+        this(id, login, password, email, comment, name, active);
+        this.roles = roles.stream().map(r -> UserRole.valueOf(r)).collect(Collectors.toSet());
+    }
+
+    @QueryProjection
+    public User(Integer id, String login, String password, String email, String comment, String name, Boolean active, Set<String> roles, Long deviceCount) {
+        this(id, login, password, email, comment, name, active, roles);
+        addField(DEVICE_COUNT, deviceCount);
+    }
+
+    @QueryProjection
+    public User(Integer id, String login, String password, String email, String comment, String name, Boolean active, Set<String> roles, Set<Integer> deviceIds) {
+        this(id, login, password, email, comment, name, active, roles);
+        this.devices = deviceIds.stream().map(dId -> new Device(dId)).collect(Collectors.toSet());
+    }
+
+    public User() {
+    }
+
+    public User(Integer id, String login, String email) {
+        this.id = id;
+        this.login = login;
+        this.email = email;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -90,6 +113,9 @@ public class User extends AbstractEntity {
     }
 
     public Boolean getActive() {
+        if (active == null) {
+            return false;
+        }
         return active;
     }
 

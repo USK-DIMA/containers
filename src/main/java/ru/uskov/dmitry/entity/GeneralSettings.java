@@ -1,20 +1,11 @@
 package ru.uskov.dmitry.entity;
 
+import com.querydsl.core.annotations.QueryProjection;
 import ru.uskov.dmitry.enums.GeneralSettingType;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
 
-/**
- * Created by Dmitry on 02.06.2017.
- */
-@Entity
 public class GeneralSettings extends AbstractEntity {
 
-    @Id
-    @Enumerated(EnumType.STRING)
     private GeneralSettingType type;
     private String value;
 
@@ -22,6 +13,13 @@ public class GeneralSettings extends AbstractEntity {
         this.type = type;
         this.value = type.serialize(value);
     }
+
+    @QueryProjection
+    public GeneralSettings(String name, String value) {
+        this.type = GeneralSettingType.valueOf(name);
+        this.value = value;
+    }
+
 
     public GeneralSettings() {
     }

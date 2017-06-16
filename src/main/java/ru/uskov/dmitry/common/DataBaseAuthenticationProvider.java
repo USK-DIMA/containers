@@ -26,7 +26,7 @@ public class DataBaseAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = (String) authentication.getCredentials();
 
-        User user = userService.loadActiveUserByLogin(username);
+        User user = userService.loadUserByLoginWithRoles(username, true);
 
         if (user == null || !user.getLogin().equalsIgnoreCase(username)) {
             throw new BadCredentialsException("Username not found.");

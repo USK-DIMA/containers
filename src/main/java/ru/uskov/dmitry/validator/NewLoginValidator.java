@@ -21,7 +21,6 @@ public class NewLoginValidator implements ConstraintValidator<NewLogin, String> 
 
     @Override
     public boolean isValid(String login, ConstraintValidatorContext constraintValidatorContext) {
-        System.out.println("Валидирование логина");
         System.out.println(userService);
         return false;
     }

@@ -1,4 +1,4 @@
-package ru.uskov.dmitry.config;
+package ru.uskov.dmitry.servletConfig;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

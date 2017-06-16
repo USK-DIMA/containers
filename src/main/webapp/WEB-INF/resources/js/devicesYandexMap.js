@@ -58,7 +58,9 @@ function addCollection(map, collection) {
     if(collection.getLength() == 0 ){
         return;
     }
-    collection.add(getStartPoint());
+    if(getStartPoint() != undefined){
+        collection.add(getStartPoint());
+    }
     map.geoObjects.add(collection);
     if(collection.getLength() == 1 ){
                 deviceMap.setCenter(collection.get(0).geometry.getCoordinates());
@@ -166,9 +168,11 @@ function buildRows() {
         return; //промис
     }
     var geoPoints = [];
-    var startPoint = getStartPoint();
-    geoPoints.push(startPoint.geometry.getCoordinates());
-    deviceMap.geoObjects.add(startPoint);
+    if(getStartPoint() != undefined){
+        var startPoint = getStartPoint();
+        geoPoints.push(startPoint.geometry.getCoordinates());
+        deviceMap.geoObjects.add(startPoint);
+    }
     Object.keys(currentPoints).forEach(function(v, i, a){
         var point = currentPoints[v];
         geoPoints.push(point.geometry.getCoordinates());

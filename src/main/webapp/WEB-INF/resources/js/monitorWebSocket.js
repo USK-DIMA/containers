@@ -1,5 +1,5 @@
 var stompClient = null;
-var REQUEST_UPDATE_TABLE_PAUSE = 5000; //период, через который отпрвялется запрос на сервер с просьбой обновить таблицу
+var REQUEST_UPDATE_TABLE_PAUSE = 2000; //период, через который отпрвялется запрос на сервер с просьбой обновить таблицу
 
 var currentTimestamp;
 function connectToMonitorWebSocket(initCallback, updateCallBack) {
