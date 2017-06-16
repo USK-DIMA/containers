@@ -12,9 +12,8 @@ import ru.uskov.dmitry.controller.form.UserProfileForm;
 import ru.uskov.dmitry.controller.webEntity.DeviceWebEntity;
 import ru.uskov.dmitry.entity.User;
 import ru.uskov.dmitry.exception.ConfirmPasswordException;
-import ru.uskov.dmitry.exception.EmailAlreadyExistException;
+import ru.uskov.dmitry.exception.IncorrectNewUserException;
 import ru.uskov.dmitry.exception.IncorrectPasswordException;
-import ru.uskov.dmitry.exception.LoginAlreadyExistException;
 import ru.uskov.dmitry.service.DeviceService;
 import ru.uskov.dmitry.service.UserService;
 
@@ -67,7 +66,7 @@ public class ProfileController {
 
     @RequestMapping(path = "/save", method = RequestMethod.POST)
     @ResponseBody
-    public void saveUserInfo(@RequestBody UserProfileForm userForm) throws EmailAlreadyExistException, LoginAlreadyExistException {
+    public void saveUserInfo(@RequestBody UserProfileForm userForm) throws IncorrectNewUserException {
         userService.updateCurrentUser(userForm.getLogin(), userForm.getEmail(), userForm.getName());
     }
 

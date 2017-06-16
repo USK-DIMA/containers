@@ -12,21 +12,24 @@ import ru.uskov.dmitry.dao.UserDao;
 import ru.uskov.dmitry.entity.User;
 import ru.uskov.dmitry.enums.UserRole;
 import ru.uskov.dmitry.exception.ConfirmPasswordException;
-import ru.uskov.dmitry.exception.EmailAlreadyExistException;
+import ru.uskov.dmitry.exception.IncorrectNewUserException;
 import ru.uskov.dmitry.exception.IncorrectPasswordException;
-import ru.uskov.dmitry.exception.LoginAlreadyExistException;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by Dmitry on 11.03.2017.
  */
 @Service
 public class UserService extends AbstractService {
+
+    @Autowired
+    Validator validator;
 
     @Autowired
     UserDao userDao;
@@ -49,28 +52,16 @@ public class UserService extends AbstractService {
     }
 
     @TransactionalService
-    public void createUser(User newUser) throws EmailAlreadyExistException, LoginAlreadyExistException {
-        checkLoginAndEmail(newUser);
+    public void createUser(User newUser) throws IncorrectNewUserException {
+        validateOrThrow(newUser);
         Integer userId = userDao.insertUser(newUser);
         userDao.insertUserRoles(userId, newUser.getRoles());
     }
 
-    @TransactionalSupport
-    private void checkLoginAndEmail(User user) throws EmailAlreadyExistException, LoginAlreadyExistException {
-        checkLoginAndEmail(user.getId(), user.getLogin(), user.getEmail());
-    }
-
-    @TransactionalSupport
-    private void checkLoginAndEmail(Integer userId, String login, String email) throws EmailAlreadyExistException, LoginAlreadyExistException {
-        List<User> allUsers = userDao.loadAllWithout(userId);
-        List<String> emails = allUsers.stream().map(u -> u.getEmail()).collect(Collectors.toList());
-        List<String> logins = allUsers.stream().map(u -> u.getLogin()).collect(Collectors.toList());
-        if (emails.contains(email)) {
-            throw new EmailAlreadyExistException("Данный Email уже присутсвует в системе");
-        }
-
-        if (logins.contains(login)) {
-            throw new LoginAlreadyExistException("Выбранный логин уже занят кем-то другим");
+    private void validateOrThrow(User newUser) throws IncorrectNewUserException {
+        Set<ConstraintViolation<User>> invalids = validator.validate(newUser);
+        if (invalids.size() > 0) {
+            throw new IncorrectNewUserException(invalids.iterator().next().getMessage());
         }
     }
 
@@ -96,9 +87,8 @@ public class UserService extends AbstractService {
 
 
     @TransactionalService
-    public void updateUser(User user, Set<Integer> deviceId) throws LoginAlreadyExistException, EmailAlreadyExistException {
-        checkLoginAndEmail(user);
-
+    public void updateUser(User user, Set<Integer> deviceId) throws IncorrectNewUserException {
+        validateOrThrow(user);
         userDao.update(user.getId(), user.getLogin(), user.getEmail(), user.getName(), user.getComment());
 
         saveUserRoles(user.getId(), user.getRoles());
@@ -144,9 +134,9 @@ public class UserService extends AbstractService {
     }
 
     @TransactionalService
-    public void updateCurrentUser(String login, String email, String name) throws LoginAlreadyExistException, EmailAlreadyExistException {
+    public void updateCurrentUser(String login, String email, String name) throws IncorrectNewUserException {
         User user = common.getUpdatedCurrentUser();
-        checkLoginAndEmail(user.getId(), login, email);
+        validateOrThrow(new User(user.getId(), login, email));
         userDao.update(user.getId(), login, email, name, null);
         common.updateCurrentUser();
     }

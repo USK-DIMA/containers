@@ -2,10 +2,12 @@ package ru.uskov.dmitry.entity;
 
 import com.querydsl.core.annotations.QueryProjection;
 import ru.uskov.dmitry.enums.UserRole;
+import ru.uskov.dmitry.validator.annotataions.NewUser;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@NewUser
 public class User extends AbstractEntity {
 
     public static String DEVICE_COUNT = "DEVICE_COUNT";
@@ -54,6 +56,12 @@ public class User extends AbstractEntity {
     }
 
     public User() {
+    }
+
+    public User(Integer id, String login, String email) {
+        this.id = id;
+        this.login = login;
+        this.email = email;
     }
 
     public Integer getId() {

@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.uskov.dmitry.controller.form.UserForm;
 import ru.uskov.dmitry.controller.webEntity.UserWebEntity;
 import ru.uskov.dmitry.entity.User;
-import ru.uskov.dmitry.exception.EmailAlreadyExistException;
-import ru.uskov.dmitry.exception.LoginAlreadyExistException;
+import ru.uskov.dmitry.exception.IncorrectNewUserException;
 import ru.uskov.dmitry.service.UserService;
 
 import java.util.List;
@@ -40,7 +39,7 @@ public class AdminUserController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String createUser(@ModelAttribute("userForm") User newUser) throws LoginAlreadyExistException, EmailAlreadyExistException {
+    public String createUser(@ModelAttribute("userForm") User newUser) throws IncorrectNewUserException {
         userService.createUser(newUser);
         return "redirect:/admin/users";
     }
@@ -73,7 +72,7 @@ public class AdminUserController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public void updateUser(@RequestBody(required = false) UserForm user) throws EmailAlreadyExistException, LoginAlreadyExistException {
+    public void updateUser(@RequestBody(required = false) UserForm user) throws IncorrectNewUserException {
         userService.updateUser(user, user.getDeviceId());
     }
 
